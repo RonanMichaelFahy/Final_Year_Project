@@ -1,0 +1,36 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.example.ronan.final_year_project.ClinicianPrescriptionSetupActivity">
+
+    <Button
+        android:id="@+id/pair_devices_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Pair Devices"/>
+
+    <Button
+        android:id="@+id/intensity_levels_button"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:text="Set Maximum and Minimum Intensity Levels"
+        android:layout_below="@+id/pair_devices_button"/>
+
+    <Button
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_below="@+id/intensity_levels_button"
+        android:text="Cyclic Mode"
+        android:id="@+id/cyclic_mode_button" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Test Run"
+        android:layout_below="@+id/cyclic_mode_button"
+        android:id="@+id/test_run_button" />
+
+</RelativeLayout>
