@@ -12,10 +12,14 @@ import com.parse.Parse;
 
 public class MainActivity extends Activity {
 
+    private StimulationParameters stimulationParameters;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        stimulationParameters = new StimulationParameters();
 
         // [Optional] Power your app with Local Datastore. For more info, go to
         // https://parse.com/docs/android/guide#local-datastore
@@ -36,6 +40,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, PatientTestRunActivity.class);
+                intent.putExtra("EXTRA_STIMULATION_PARAMETERS", stimulationParameters);
                 startActivity(intent);
             }
         });
@@ -70,5 +75,13 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public StimulationParameters getStimulationParameters() {
+        return this.stimulationParameters;
+    }
+
+    public void setStimulationParameters(StimulationParameters stimulationParameters) {
+        this.stimulationParameters = stimulationParameters;
     }
 }
