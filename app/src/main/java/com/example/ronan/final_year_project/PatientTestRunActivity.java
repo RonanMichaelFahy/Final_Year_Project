@@ -81,7 +81,7 @@ public class PatientTestRunActivity extends FragmentActivity {
         PatientTestRunActivity.rampUpTimeValue = rampUpTimeValue;
     }
 
-    public static int getRampDownTimeValue(){
+    public static int getRampDownTimeValue() {
         return rampDownTimeValue;
     }
 
