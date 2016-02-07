@@ -13,6 +13,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.util.List;
+
 public class BluetoothLeService extends Service {
 
     private final static String TAG = BluetoothLeService.class.getSimpleName();
@@ -24,7 +26,7 @@ public class BluetoothLeService extends Service {
     private String mBluetoothDeviceAddress;
     private BluetoothGatt mBluetoothGatt;
     private int mConnectionState = STATE_DISCONNECTED;
-    private Object supportedGattServices;
+    private List supportedGattServices;
     private BluetoothDevice device;
 
     private static final int STATE_DISCONNECTED = 0;
@@ -56,8 +58,8 @@ public class BluetoothLeService extends Service {
                     mConnectionState = STATE_CONNECTED;
                     broadcastUpdate(intentAction);
                     Log.i(TAG, "Connected to GATT server.");
-                    Log.i(TAG, "Attempting to start service discovery:" +
-                            mBluetoothGatt.discoverServices());
+                    /*Log.i(TAG, "Attempting to start service discovery:" +
+                            mBluetoothGatt.discoverServices());*/
 
                 } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                     intentAction = ACTION_GATT_DISCONNECTED;
@@ -92,16 +94,6 @@ public class BluetoothLeService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId){
-
-        device = intent.getParcelableExtra("EXTRA_DEVICE");
-        System.out.println(device);
-        mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
-
-        return START_STICKY;
-    }
-
-    @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
@@ -128,7 +120,7 @@ public class BluetoothLeService extends Service {
         sendBroadcast(intent);
     }
 
-    public Object getSupportedGattServices() {
+    public List getSupportedGattServices() {
         return supportedGattServices;
     }
 

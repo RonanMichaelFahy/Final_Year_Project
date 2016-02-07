@@ -3,11 +3,15 @@ package com.example.ronan.final_year_project;
 import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,9 +23,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class DeviceScanActivity extends ListActivity {
 
+    private BluetoothGatt mBluetoothGatt;
+    private BluetoothDevice mBluetoothDevice;
+    private BluetoothLeService mBluetoothLeService;
+    private boolean mBound;
     private String TAG = "DeviceScanActivity";
     private BluetoothAdapter mBluetoothAdapter;
     private Handler mHandler;
@@ -42,8 +51,25 @@ public class DeviceScanActivity extends ListActivity {
     };
 
     private static final long SCAN_PERIOD = 10000;
-
     private static final int REQUEST_ENABLE_BT = 1;
+
+    private final ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            BluetoothLeService.LocalBinder localBinder = (BluetoothLeService.LocalBinder) service;
+            mBluetoothLeService = localBinder.getService();
+            mBound = true;
+
+            mBluetoothGatt = mBluetoothDevice.connectGatt(DeviceScanActivity.this, false, mBluetoothLeService.mGattCallback);
+            mBluetoothGatt.getService(new UUID(42, 0));
+            System.out.println(mBluetoothGatt.getService(new UUID(42, 0)));
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mBound = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,22 +146,11 @@ public class DeviceScanActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView listView, View view, int position, long id){
 
-        final BluetoothDevice bluetoothDevice = mLeDeviceListAdapter.getDevice(position);
-        if (bluetoothDevice == null) return;
+        mBluetoothDevice = mLeDeviceListAdapter.getDevice(position);
+        if (mBluetoothDevice == null) return;
 
-        bluetoothDevice.connectGatt(this, false, new BluetoothLeService().mGattCallback);
-
-        /*final Intent intent = new Intent(DeviceScanActivity.this, DeviceControlActivity.class);
-        intent.putExtra(DeviceControlActivity.EXTRA_DEVICE_NAME, bluetoothDevice.getName());
-        intent.putExtra(DeviceControlActivity.EXTRA_DEVICE_ADDRESS, bluetoothDevice.getAddress());
-        intent.putExtra(DeviceControlActivity.EXTRA_DEVICE, bluetoothDevice);
-
-        if(mScanning){
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
-            mScanning = false;
-        }
-
-        startActivity(intent);*/
+        Intent intent = new Intent(this, BluetoothLeService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
     public class LeDeviceListAdapter extends BaseAdapter {
@@ -144,9 +159,8 @@ public class DeviceScanActivity extends ListActivity {
         private LayoutInflater mInflator;
 
         public LeDeviceListAdapter() {
-            super();
             mLeDevices = new ArrayList<BluetoothDevice>();
-            mInflator = DeviceScanActivity.this.getLayoutInflater();
+            mInflator = getLayoutInflater();
         }
 
         @Override
