@@ -44,7 +44,7 @@ public class DeviceScanActivity extends ListActivity {
                 public void run() {
                     mLeDeviceListAdapter.addDevice(device);
                     mLeDeviceListAdapter.notifyDataSetChanged();
-                    Log.i("info", "Device found");
+                    Log.i("Found device", device.getName());
                 }
             });
         }

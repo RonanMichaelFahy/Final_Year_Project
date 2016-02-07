@@ -10,9 +10,6 @@ import android.widget.SeekBar;
 
 public class PatientTestRunActivity extends FragmentActivity {
 
-    private static final String EXTRA_STIMULATION_PARAMETERS = "EXTRA_STIMULATION_PARAMETERS";
-    private StimulationParameters stimulationParameters;
-
     private static int rampUpTimeValue;
     private static int rampDownTimeValue;
     private static boolean up;
@@ -22,8 +19,6 @@ public class PatientTestRunActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_test_run);
 
-        stimulationParameters = (StimulationParameters) getIntent().getSerializableExtra("EXTRA_STIMULATION_PARAMETERS");
-
         final Button saveRampUpTime = (Button) findViewById(R.id.saveRampUpTime);
         saveRampUpTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -31,8 +26,7 @@ public class PatientTestRunActivity extends FragmentActivity {
                 final SeekBar rampUpTimeSeekBar = (SeekBar) findViewById(R.id.rampUpTimeSeekBar);
                 setRampUpTimeValue(rampUpTimeSeekBar.getProgress());
                 setUp(true);
-                //PatientConfirmationFragment confirmation = new PatientConfirmationFragment();
-                PatientConfirmationFragment confirmation = PatientConfirmationFragment.newInstance(stimulationParameters);
+                PatientConfirmationFragment confirmation = new PatientConfirmationFragment();
                 confirmation.show(getSupportFragmentManager(), "fragment_confirmation");
             }
         });
@@ -44,8 +38,7 @@ public class PatientTestRunActivity extends FragmentActivity {
                 final SeekBar rampDownTimeSeekBar = (SeekBar) findViewById(R.id.rampDownTimeSeekBar);
                 setRampDownTimeValue(rampDownTimeSeekBar.getProgress());
                 setUp(false);
-                //PatientConfirmationFragment confirmation = new PatientConfirmationFragment();
-                PatientConfirmationFragment confirmation = PatientConfirmationFragment.newInstance(stimulationParameters);
+                PatientConfirmationFragment confirmation = new PatientConfirmationFragment();
                 confirmation.show(getSupportFragmentManager(), "fragment_confirmation");
             }
         });
