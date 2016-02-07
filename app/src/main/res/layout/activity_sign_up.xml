@@ -30,7 +30,7 @@
                 android:id="@+id/password_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/prompt_password"
+                android:hint="Password"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true"
@@ -46,13 +46,6 @@
                 android:imeActionId="@+id/edittext_action_signup"
                 android:imeOptions="actionUnspecified"
                 android:hint="@string/confirm_password"
-            />
-
-            <CheckBox
-                android:id="@+id/clinician_check_box"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/clinician"
             />
 
             <Button

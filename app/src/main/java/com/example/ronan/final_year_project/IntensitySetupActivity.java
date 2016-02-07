@@ -24,7 +24,7 @@ public class IntensitySetupActivity extends Activity {
         plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intensity++;
+                setIntensity(intensity + 1);
                 intensityLevel.setText(intensity+"%");
             }
         });
@@ -32,8 +32,24 @@ public class IntensitySetupActivity extends Activity {
         minusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intensity--;
+                setIntensity(intensity - 1);
                 intensityLevel.setText(intensity+"%");
+            }
+        });
+
+        final Button sensoryThresholdButton = (Button) findViewById(R.id.setSensoryThresholdButton);
+        sensoryThresholdButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //ParseQuery<ParseObject> query = new ParseQuery("stimulation_parameters");
+                //query.whereEqualTo("user", ParseUser.getCurrentUser());
+                //query.findInBackground(new FindCallback<ParseObject>() {
+                //    @Override
+                //    public void done(List<ParseObject> objects, ParseException e) {
+                //        objects.get(0).put("sensory_threshold", intensity);
+                //        objects.get(0).saveInBackground();
+                //    }
+                //});
             }
         });
     }
@@ -58,5 +74,11 @@ public class IntensitySetupActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setIntensity(int intensity){
+        if(intensity >= 0 && intensity <= 100){
+            this.intensity = intensity;
+        }
     }
 }

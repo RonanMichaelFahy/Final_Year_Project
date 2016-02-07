@@ -42,7 +42,7 @@
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
         <activity
-            android:name=".ClinicianPrescriptionSetupActivity"
+            android:name=".PrescriptionSetupActivity"
             android:label="@string/title_activity_prescription_setup" >
         </activity>
         <activity

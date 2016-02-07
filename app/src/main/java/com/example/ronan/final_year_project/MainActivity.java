@@ -2,16 +2,14 @@ package com.example.ronan.final_year_project;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.ronan.final_year_project.R.menu;
 import com.parse.Parse;
+import com.parse.ParseUser;
 
 public class MainActivity extends Activity {
 
@@ -73,5 +71,11 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        ParseUser.getCurrentUser().logOut();
     }
 }

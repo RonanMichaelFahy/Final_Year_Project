@@ -7,11 +7,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
@@ -20,7 +20,6 @@ public class SignUpActivity extends Activity {
     private EditText usernameEditText;
     private EditText passwordEditText;
     private EditText passwordAgainEditText;
-    private CheckBox clinicianCheckBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +29,6 @@ public class SignUpActivity extends Activity {
         usernameEditText = (EditText) findViewById(R.id.username_edit_text);
         passwordEditText = (EditText) findViewById(R.id.password_edit_text);
         passwordAgainEditText = (EditText) findViewById(R.id.password_again_edit_text);
-        clinicianCheckBox = (CheckBox) findViewById(R.id.clinician_check_box);
 
         Button mActionButton = (Button) findViewById(R.id.action_button);
         mActionButton.setOnClickListener(new View.OnClickListener() {
@@ -80,10 +78,6 @@ public class SignUpActivity extends Activity {
         ParseUser user = new ParseUser();
         user.setUsername(username);
         user.setPassword(password);
-        if(clinicianCheckBox.isChecked())
-            user.put("clinician", true);
-        else
-            user.put("clinician", false);
 
         // Call the Parse signup method
         user.signUpInBackground(new SignUpCallback() {
@@ -97,8 +91,12 @@ public class SignUpActivity extends Activity {
                     Toast.makeText(SignUpActivity.this, e.getMessage(),
                             Toast.LENGTH_LONG).show();
                 } else {
+                    ParseObject stimulationParameters = new ParseObject("stimulation_parameters");
+                    stimulationParameters.put("user", ParseUser.getCurrentUser());
+                    stimulationParameters.saveInBackground();
+
                     // Start an intent for the dispatch activity
-                    Intent intent = new Intent(SignUpActivity.this, ClinicianPrescriptionSetupActivity.class);
+                    Intent intent = new Intent(SignUpActivity.this, PrescriptionSetupActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
                             Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);

@@ -8,18 +8,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-public class ClinicianPrescriptionSetupActivity extends Activity {
+public class PrescriptionSetupActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_clinician_prescription_setup);
+        setContentView(R.layout.activity_prescription_setup);
 
         final Button intensityLevelsButton = (Button) findViewById(R.id.intensity_levels_button);
         intensityLevelsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ClinicianPrescriptionSetupActivity.this, IntensitySetupActivity.class);
+                Intent intent = new Intent(PrescriptionSetupActivity.this, IntensitySetupActivity.class);
                 startActivity(intent);
             }
         });
@@ -28,7 +28,7 @@ public class ClinicianPrescriptionSetupActivity extends Activity {
         cyclicModeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ClinicianPrescriptionSetupActivity.this, CyclicModeActivity.class);
+                Intent intent = new Intent(PrescriptionSetupActivity.this, CyclicModeActivity.class);
                 startActivity(intent);
             }
         });
@@ -37,7 +37,7 @@ public class ClinicianPrescriptionSetupActivity extends Activity {
         testRunButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ClinicianPrescriptionSetupActivity.this, TestRunActivity.class);
+                Intent intent = new Intent(PrescriptionSetupActivity.this, TestRunActivity.class);
                 startActivity(intent);
             }
         });
