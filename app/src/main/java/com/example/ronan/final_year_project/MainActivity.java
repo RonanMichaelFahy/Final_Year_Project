@@ -2,24 +2,23 @@ package com.example.ronan.final_year_project;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.ronan.final_year_project.R.menu;
 import com.parse.Parse;
 
 public class MainActivity extends Activity {
-
-    private StimulationParameters stimulationParameters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        stimulationParameters = new StimulationParameters();
 
         // [Optional] Power your app with Local Datastore. For more info, go to
         // https://parse.com/docs/android/guide#local-datastore
@@ -40,7 +39,6 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, PatientTestRunActivity.class);
-                intent.putExtra("EXTRA_STIMULATION_PARAMETERS", stimulationParameters);
                 startActivity(intent);
             }
         });
@@ -61,12 +59,12 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
 
         if (id == R.id.action_login) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
         }
 
         if (id == R.id.action_sign_up) {
-            Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
+            Intent intent = new Intent(this, SignUpActivity.class);
             startActivity(intent);
         }
 
@@ -75,13 +73,5 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public StimulationParameters getStimulationParameters() {
-        return this.stimulationParameters;
-    }
-
-    public void setStimulationParameters(StimulationParameters stimulationParameters) {
-        this.stimulationParameters = stimulationParameters;
     }
 }

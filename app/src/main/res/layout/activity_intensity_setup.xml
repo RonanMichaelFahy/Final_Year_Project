@@ -40,12 +40,18 @@
 
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/top_level"
+        android:text="Test"/>
+
     <RelativeLayout
-        android:id="@+id/second_level"
+        android:id="@+id/third_level"
         android:layout_width="fill_parent"
         android:layout_height="100sp"
-        android:layout_below="@+id/top_level"
-        android:layout_marginTop="30sp">
+        android:layout_below="@+id/test">
 
         <Button
             android:layout_width="150sp"
@@ -53,6 +59,7 @@
             android:text="Set Sensory Threshold"
             android:textSize="20sp"
             android:id="@+id/setSensoryThresholdButton" />
+
         <Button
             android:layout_width="150sp"
             android:layout_height="match_parent"
@@ -63,13 +70,25 @@
 
     </RelativeLayout>
 
-    <Button
-        android:layout_width="150sp"
-        android:layout_height="100sp"
-        android:text="Set Pain Threshold"
-        android:textSize="20sp"
-        android:id="@+id/set_pain_threshold_button"
-        android:layout_below="@+id/second_level"
-        android:layout_centerHorizontal="true" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/third_level">
+
+        <Button
+            android:layout_width="150sp"
+            android:layout_height="100sp"
+            android:text="Set Pain Threshold"
+            android:textSize="20sp"
+            android:id="@+id/set_pain_threshold_button" />
+
+        <Button
+            android:layout_width="150sp"
+            android:layout_height="100sp"
+            android:text="Set Balanced Dorsiflexion Level"
+            android:textSize="17sp"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

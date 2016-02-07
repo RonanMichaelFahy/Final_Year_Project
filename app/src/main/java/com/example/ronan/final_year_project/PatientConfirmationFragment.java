@@ -3,19 +3,14 @@ package com.example.ronan.final_year_project;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
 public class PatientConfirmationFragment extends DialogFragment {
 
-    private static final String EXTRA_STIMULATION_PARAMETERS = "EXTRA_STIMULATION_PARAMETERS";
-
-    private StimulationParameters stimulationParameters;
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-
-        stimulationParameters = (StimulationParameters) getArguments().getSerializable("EXTRA_STIMULATION_PARAMETERS");
 
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -23,7 +18,10 @@ public class PatientConfirmationFragment extends DialogFragment {
             builder.setMessage("You have chosen a value of "+PatientTestRunActivity.getRampUpTimeValue()+" for ramp-up time.")
                     .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            stimulationParameters.setRampUpTime(PatientTestRunActivity.getRampUpTimeValue());
+                            SharedPreferences stimulationParameters = getActivity().getSharedPreferences("Stimulation_Parameters", 0);
+                            SharedPreferences.Editor editor = stimulationParameters.edit();
+                            editor.putInt("Ramp-up Time", PatientTestRunActivity.getRampUpTimeValue());
+                            editor.commit();
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -38,7 +36,10 @@ public class PatientConfirmationFragment extends DialogFragment {
             builder.setMessage("You have chosen a value of "+PatientTestRunActivity.getRampDownTimeValue()+" for ramp-down time.")
                     .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            stimulationParameters.setRampDownTime(PatientTestRunActivity.getRampDownTimeValue());
+                            SharedPreferences stimulationParameters = getActivity().getSharedPreferences("Stimulation_Parameters", 0);
+                            SharedPreferences.Editor editor = stimulationParameters.edit();
+                            editor.putInt("Ramp-down Time", PatientTestRunActivity.getRampDownTimeValue());
+                            editor.commit();
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -51,11 +52,10 @@ public class PatientConfirmationFragment extends DialogFragment {
         }
     }
 
-    public static PatientConfirmationFragment newInstance(StimulationParameters stimulationParameters){
+    public static PatientConfirmationFragment newInstance(){
 
         PatientConfirmationFragment patientConfirmationFragment = new PatientConfirmationFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(EXTRA_STIMULATION_PARAMETERS, stimulationParameters);
         patientConfirmationFragment.setArguments(bundle);
 
         return patientConfirmationFragment;

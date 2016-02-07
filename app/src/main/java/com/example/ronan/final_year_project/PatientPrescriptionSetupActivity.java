@@ -10,14 +10,11 @@ import android.widget.Button;
 
 public class PatientPrescriptionSetupActivity extends Activity {
 
-    private StimulationParameters stimulationParameters;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_prescription_setup);
 
-        stimulationParameters = new StimulationParameters();
 
         final Button pairDevicesButton = (Button) findViewById(R.id.pair_devices_button);
         pairDevicesButton.setOnClickListener(new View.OnClickListener() {
@@ -33,7 +30,6 @@ public class PatientPrescriptionSetupActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(PatientPrescriptionSetupActivity.this, PatientTestRunActivity.class);
-                intent.putExtra("EXTRA_STIMULATION_PARAMETERS", stimulationParameters);
                 startActivity(intent);
             }
         });
@@ -59,9 +55,5 @@ public class PatientPrescriptionSetupActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public StimulationParameters getStimulationParameters() {
-        return this.stimulationParameters;
     }
 }

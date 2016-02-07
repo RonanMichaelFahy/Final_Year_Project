@@ -16,7 +16,7 @@
         android:id="@+id/intensity_levels_button"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:text="Set Maximum and Minimum Intensity Levels"
+        android:text="Set Intensity Level"
         android:layout_below="@+id/pair_devices_button"/>
 
     <Button
