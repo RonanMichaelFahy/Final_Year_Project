@@ -17,7 +17,7 @@ public class ClinicianConfirmationFragment extends DialogFragment {
                 builder.setMessage("You have chosen a value of "+TestRunActivity.getRampUpTimeValue()+" for ramp-up time.")
                         .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                // FIRE ZE MISSILES!
+                                System.out.println("hello");
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

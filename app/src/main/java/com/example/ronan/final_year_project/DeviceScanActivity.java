@@ -2,6 +2,7 @@ package com.example.ronan.final_year_project;
 
 import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothAdapter.LeScanCallback;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothManager;
@@ -9,10 +10,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,8 +24,9 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class DeviceScanActivity extends ListActivity {
 
@@ -36,7 +39,8 @@ public class DeviceScanActivity extends ListActivity {
     private Handler mHandler;
     private boolean mScanning;
     private LeDeviceListAdapter mLeDeviceListAdapter;
-    private BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
+    private int listItemPosition;
+    private LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
             runOnUiThread(new Runnable() {
@@ -44,7 +48,7 @@ public class DeviceScanActivity extends ListActivity {
                 public void run() {
                     mLeDeviceListAdapter.addDevice(device);
                     mLeDeviceListAdapter.notifyDataSetChanged();
-                    Log.i("Found device", device.getName());
+                    //Log.i("Found device", device.getName());
                 }
             });
         }
@@ -61,8 +65,9 @@ public class DeviceScanActivity extends ListActivity {
             mBound = true;
 
             mBluetoothGatt = mBluetoothDevice.connectGatt(DeviceScanActivity.this, false, mBluetoothLeService.mGattCallback);
-            mBluetoothGatt.getService(new UUID(42, 0));
-            System.out.println(mBluetoothGatt.getService(new UUID(42, 0)));
+            // TODO: 07/02/2016 get MAC address of device
+            mBluetoothLeService.initialize();
+            mBluetoothLeService.connect(mLeDeviceListAdapter.getDevice(listItemPosition).getAddress());
         }
 
         @Override
@@ -147,9 +152,19 @@ public class DeviceScanActivity extends ListActivity {
     protected void onListItemClick(ListView listView, View view, int position, long id){
 
         mBluetoothDevice = mLeDeviceListAdapter.getDevice(position);
+        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(mLeDeviceListAdapter.getDevice(position));
+        editor.putString("device", json);
+        editor.commit();
+
         if (mBluetoothDevice == null) return;
 
+        listItemPosition = position;
+
         Intent intent = new Intent(this, BluetoothLeService.class);
+        startService(intent);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -221,5 +236,14 @@ public class DeviceScanActivity extends ListActivity {
     static class ViewHolder {
         public TextView deviceAddress;
         public TextView deviceName;
+    }
+
+    @Override
+    public void onPause(){
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+        super.onPause();
     }
 }
