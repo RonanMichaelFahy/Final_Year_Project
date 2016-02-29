@@ -14,22 +14,33 @@
         android:id="@+id/pulse_width"
         android:layout_marginTop="10dp"
         android:textStyle="bold"
-        android:textSize="20sp"
-    />
+        android:textSize="20sp" />
     <Button
         android:id="@+id/save_pulse_width_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save"
         android:layout_alignParentEnd="true"
-        android:layout_alignBaseline="@+id/pulse_width"
-    />
+        android:layout_alignBaseline="@+id/pulse_width" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pulse_width"
+        android:layout_alignParentLeft="true"
+        android:text="0" />
     <SeekBar
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/pulse_width"
         android:id="@+id/pulse_width_seek_bar"
-    />
+        android:layout_margin="10sp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pulse_width"
+        android:layout_alignParentRight="true"
+        android:text="100" />
+
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,22 +50,32 @@
         android:layout_below="@+id/pulse_width_seek_bar"
         android:layout_marginTop="10dp"
         android:textStyle="bold"
-        android:textSize="20sp"
-    />
+        android:textSize="20sp" />
     <Button
         android:id="@+id/save_pulse_frequency_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save"
         android:layout_alignParentEnd="true"
-        android:layout_alignBaseline="@+id/pulse_frequency"
-    />
+        android:layout_alignBaseline="@+id/pulse_frequency" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pulse_frequency"
+        android:layout_alignParentLeft="true"
+        android:text="0" />
     <SeekBar
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/pulse_frequency"
         android:id="@+id/pulse_frequency_seek_bar"
-    />
+        android:layout_margin="10sp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pulse_frequency"
+        android:layout_alignParentRight="true"
+        android:text="100" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -64,22 +85,32 @@
         android:layout_below="@+id/pulse_frequency_seek_bar"
         android:layout_marginTop="10dp"
         android:textStyle="bold"
-        android:textSize="20sp"
-    />
+        android:textSize="20sp" />
     <Button
         android:id="@+id/save_ramp_up_time_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save"
         android:layout_alignParentEnd="true"
-        android:layout_alignBaseline="@+id/rampUpTime"
-    />
+        android:layout_alignBaseline="@+id/rampUpTime" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rampUpTime"
+        android:layout_alignParentLeft="true"
+        android:text="0" />
     <SeekBar
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rampUpTime"
         android:id="@+id/ramp_up_time_seek_bar"
-    />
+        android:layout_margin="10sp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rampUpTime"
+        android:layout_alignParentRight="true"
+        android:text="100" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -89,20 +120,30 @@
         android:layout_below="@+id/ramp_up_time_seek_bar"
         android:layout_marginTop="10dp"
         android:textStyle="bold"
-        android:textSize="20sp"
-    />
+        android:textSize="20sp" />
     <Button
         android:id="@+id/save_ramp_down_time_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save"
         android:layout_alignParentEnd="true"
-        android:layout_alignBaseline="@+id/ramp_down_time"
-    />
+        android:layout_alignBaseline="@+id/ramp_down_time" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ramp_down_time"
+        android:layout_alignParentLeft="true"
+        android:text="0" />
     <SeekBar
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ramp_down_time"
         android:id="@+id/ramp_down_time_seek_bar"
-    />
+        android:layout_margin="10sp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ramp_down_time"
+        android:layout_alignParentRight="true"
+        android:text="100" />
 </RelativeLayout>

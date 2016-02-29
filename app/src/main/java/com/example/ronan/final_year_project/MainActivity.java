@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 
 import com.parse.Parse;
 import com.parse.ParseUser;
@@ -23,23 +21,23 @@ public class MainActivity extends Activity {
         Parse.enableLocalDatastore(this);
         Parse.initialize(this);
 
-        final Button pairDevicesButton = (Button) findViewById(R.id.pair_devices_button);
+        /*final Button pairDevicesButton = (Button) findViewById(R.id.pair_devices_button);
         pairDevicesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, DeviceScanActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
 
-        final Button testRunButton = (Button) findViewById(R.id.test_run_button);
+        /*final Button testRunButton = (Button) findViewById(R.id.test_run_button);
         testRunButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, PatientTestRunActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
     }
 
     @Override

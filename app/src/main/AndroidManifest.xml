@@ -18,8 +18,8 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:label="Final Year Project"
+        android:theme="@style/AppTheme">
         <meta-data
             android:name="com.parse.APPLICATION_ID"
             android:value="rVevvSt8ncaamZ3rGJBbGKMgR7kC9eu2G4K0FG71" />
@@ -29,10 +29,9 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="Final Year Project">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -43,23 +42,23 @@
         </activity>
         <activity
             android:name=".PrescriptionSetupActivity"
-            android:label="@string/title_activity_prescription_setup" >
+            android:label="Prescription Setup" >
         </activity>
         <activity
             android:name=".IntensitySetupActivity"
-            android:label="IntensitySetupActivity" >
+            android:label="Intensity Setup" >
         </activity>
         <activity
             android:name=".CyclicModeActivity"
-            android:label="@string/title_activity_cyclic_mode" >
+            android:label="Cyclic Mode" >
         </activity>
         <activity
             android:name=".TestRunActivity"
-            android:label="@string/title_activity_test_run" >
+            android:label="Test Run" >
         </activity>
         <activity
             android:name=".SignUpActivity"
-            android:label="@string/title_activity_sign_up" >
+            android:label="Sign Up" >
         </activity>
         <activity
             android:name=".PatientPrescriptionSetupActivity"
@@ -71,19 +70,16 @@
         </activity>
         <activity
             android:name=".DeviceScanActivity"
-            android:label="@string/title_activity_bluetooth_set_up" >
+            android:label="Bluetooth Setup" >
         </activity>
-
         <service
             android:name=".BluetoothLeService"
             android:enabled="true"
             android:exported="true" >
         </service>
-
         <activity
             android:name=".DeviceControlActivity"
             android:label="@string/title_activity_device_control" >
         </activity>
     </application>
-
 </manifest>

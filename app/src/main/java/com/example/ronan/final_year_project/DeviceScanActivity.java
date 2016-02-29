@@ -15,6 +15,8 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -56,6 +59,9 @@ public class DeviceScanActivity extends ListActivity {
 
     private static final long SCAN_PERIOD = 10000;
     private static final int REQUEST_ENABLE_BT = 1;
+
+    final Messenger messenger = new Messenger(new IncomingHandler());
+    static final int MSG = 1;
 
     private final ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -168,6 +174,15 @@ public class DeviceScanActivity extends ListActivity {
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
+    @Override
+    public void onPause(){
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+        super.onPause();
+    }
+
     public class LeDeviceListAdapter extends BaseAdapter {
 
         private ArrayList<BluetoothDevice> mLeDevices;
@@ -236,14 +251,26 @@ public class DeviceScanActivity extends ListActivity {
     static class ViewHolder {
         public TextView deviceAddress;
         public TextView deviceName;
+
+        ViewHolder() {
+        }
+
+        @Override
+        public String toString() {
+            return "ViewHolder{" +
+                    "deviceAddress=" + deviceAddress +
+                    ", deviceName=" + deviceName +
+                    '}';
+        }
     }
 
-    @Override
-    public void onPause(){
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
+    class IncomingHandler extends Handler {
+
+        @Override
+        public void handleMessage(Message msg) {
+            Toast toast = Toast.makeText(DeviceScanActivity.this, msg.toString(), Toast.LENGTH_SHORT);
+            toast.show();
+            super.handleMessage(msg);
         }
-        super.onPause();
     }
 }

@@ -13,13 +13,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.util.Log;
 
 import java.util.List;
 
 public class BluetoothLeService extends Service {
 
-    private final static String TAG = BluetoothLeService.class.getSimpleName();
+    private static final String TAG = BluetoothLeService.class.getSimpleName();
 
     private final IBinder mBinder = new LocalBinder();
 
@@ -28,7 +31,6 @@ public class BluetoothLeService extends Service {
     private String mBluetoothDeviceAddress;
     private static BluetoothGatt mBluetoothGatt;
     private int mConnectionState = STATE_DISCONNECTED;
-    //private List supportedGattServices;
     private BluetoothDevice device;
 
     private static final int STATE_DISCONNECTED = 0;
@@ -46,6 +48,8 @@ public class BluetoothLeService extends Service {
     public final static String EXTRA_DATA =
             "com.example.bluetooth.le.EXTRA_DATA";
 
+    Messenger messenger;
+
     // Various callback methods defined by the BLE API.
     public final BluetoothGattCallback mGattCallback =
         new BluetoothGattCallback() {
@@ -57,11 +61,16 @@ public class BluetoothLeService extends Service {
                     intentAction = ACTION_GATT_CONNECTED;
                     mConnectionState = STATE_CONNECTED;
                     broadcastUpdate(intentAction);
+                    try {
+                        messenger.send(Message.obtain(null, DeviceScanActivity.MSG, 0, 0));
+                    } catch (RemoteException e) {
+                        System.err.println("BluetoothGattCallback Exception:");
+                        e.printStackTrace();
+                    }
                     Log.i(TAG, "Connected to GATT server.");
-                    /*Log.i(TAG, "Attempting to start service discovery:" +
-                            mBluetoothGatt.discoverServices());*/
+                }
 
-                } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                     intentAction = ACTION_GATT_DISCONNECTED;
                     mConnectionState = STATE_DISCONNECTED;
                     Log.i(TAG, "Disconnected from GATT server.");
@@ -70,7 +79,6 @@ public class BluetoothLeService extends Service {
             }
 
             @Override
-            // New services discovered
             public void onServicesDiscovered(BluetoothGatt gatt, int status) {
                 if (status == BluetoothGatt.GATT_SUCCESS) {
                     broadcastUpdate(ACTION_GATT_SERVICES_DISCOVERED);
@@ -80,7 +88,6 @@ public class BluetoothLeService extends Service {
             }
 
             @Override
-            // Result of a characteristic read operation
             public void onCharacteristicRead(BluetoothGatt gatt,
                                              BluetoothGattCharacteristic characteristic,
                                              int status) {
@@ -90,9 +97,10 @@ public class BluetoothLeService extends Service {
             }
         };
 
+    public BluetoothLeService() {
+    }
+
     public boolean initialize() {
-        // For API level 18 and above, get a reference to BluetoothAdapter through
-        // BluetoothManager.
         if (mBluetoothManager == null) {
             mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
             if (mBluetoothManager == null) {
@@ -100,12 +108,16 @@ public class BluetoothLeService extends Service {
                 return false;
             }
         }
+
         mBluetoothAdapter = mBluetoothManager.getAdapter();
         System.out.println("Bluetooth adapter: "+mBluetoothAdapter);
         if (mBluetoothAdapter == null) {
             Log.e(TAG, "Unable to obtain a BluetoothAdapter.");
             return false;
         }
+
+        messenger = new Messenger(mBinder);
+
         return true;
     }
 
@@ -213,5 +225,18 @@ public class BluetoothLeService extends Service {
     public void onDestroy() {
         System.out.println("BluetoothLeService destroyed");
         super.onDestroy();
+    }
+
+    @Override
+    public String toString() {
+        return "BluetoothLeService{" +
+                "mBinder=" + mBinder +
+                ", mBluetoothManager=" + mBluetoothManager +
+                ", mBluetoothAdapter=" + mBluetoothAdapter +
+                ", mBluetoothDeviceAddress='" + mBluetoothDeviceAddress + '\'' +
+                ", mConnectionState=" + mConnectionState +
+                ", device=" + device +
+                ", mGattCallback=" + mGattCallback +
+                '}';
     }
 }
