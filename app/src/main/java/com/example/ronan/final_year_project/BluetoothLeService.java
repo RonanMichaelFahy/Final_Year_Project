@@ -13,9 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.util.Log;
 
 import java.util.List;
@@ -61,12 +59,12 @@ public class BluetoothLeService extends Service {
                     intentAction = ACTION_GATT_CONNECTED;
                     mConnectionState = STATE_CONNECTED;
                     broadcastUpdate(intentAction);
-                    try {
+                    /*try {
                         messenger.send(Message.obtain(null, DeviceScanActivity.MSG, 0, 0));
                     } catch (RemoteException e) {
                         System.err.println("BluetoothGattCallback Exception:");
                         e.printStackTrace();
-                    }
+                    }*/
                     Log.i(TAG, "Connected to GATT server.");
                 }
 
@@ -222,21 +220,14 @@ public class BluetoothLeService extends Service {
     }
 
     @Override
-    public void onDestroy() {
-        System.out.println("BluetoothLeService destroyed");
-        super.onDestroy();
+    public void onCreate() {
+        System.out.println("BluetoothLeService created");
+        super.onCreate();
     }
 
     @Override
-    public String toString() {
-        return "BluetoothLeService{" +
-                "mBinder=" + mBinder +
-                ", mBluetoothManager=" + mBluetoothManager +
-                ", mBluetoothAdapter=" + mBluetoothAdapter +
-                ", mBluetoothDeviceAddress='" + mBluetoothDeviceAddress + '\'' +
-                ", mConnectionState=" + mConnectionState +
-                ", device=" + device +
-                ", mGattCallback=" + mGattCallback +
-                '}';
+    public void onDestroy() {
+        System.out.println("BluetoothLeService destroyed");
+        super.onDestroy();
     }
 }

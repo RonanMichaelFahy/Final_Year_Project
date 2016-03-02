@@ -13,20 +13,31 @@
         android:textStyle="bold"
         android:textSize="35sp"
         android:gravity="center"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_margin="5sp"/>
 
-<!--    <Button
-        android:id="@+id/pair_devices_button"
+    <Button
+        android:id="@+id/run_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/welcome_message"
-        android:text="Pair Devices"/> -->
+        android:text="Run Drop Foot Stimulator"
+        android:layout_margin="5sp" />
 
-<!--    <Button
+    <Button
+        android:id="@+id/pair_devices_button_main"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Test Run"
-        android:layout_below="@+id/pair_devices_button"
-        android:id="@+id/test_run_button"/> -->
+        android:text="Pair Devices"
+        android:layout_below="@+id/run_button"
+        android:layout_margin="5sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="or login / sign up to configure FES parameters"
+        android:layout_below="@+id/pair_devices_button_main"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5sp"/>
 
 </RelativeLayout>

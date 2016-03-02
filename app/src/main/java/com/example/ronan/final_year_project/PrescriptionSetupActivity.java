@@ -2,6 +2,8 @@ package com.example.ronan.final_year_project;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -17,11 +19,13 @@ import android.widget.Button;
 import com.example.ronan.final_year_project.BluetoothLeService.LocalBinder;
 import com.google.gson.Gson;
 
+import java.util.UUID;
+
 public class PrescriptionSetupActivity extends Activity {
 
     private BluetoothLeService mBluetoothLeService;
     private boolean mBound;
-    private Object mBluetoothGatt;
+    private BluetoothGatt mBluetoothGatt;
     private android.bluetooth.BluetoothDevice mBluetoothDevice;
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -46,10 +50,13 @@ public class PrescriptionSetupActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prescription_setup);
 
+        //Get device object
         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("device", "");
         mBluetoothDevice = gson.fromJson(json, BluetoothDevice.class);
+        if (mBluetoothDevice != null)
+            System.out.println("Connected to "+mBluetoothDevice.getName());
 
         Intent intent = new Intent(this, BluetoothLeService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
@@ -67,6 +74,18 @@ public class PrescriptionSetupActivity extends Activity {
         intensityLevelsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //Set deviceState in firmware to INTENSITY_SETUP
+                if (mBluetoothGatt != null) {
+
+                    System.out.println("Writing to device");
+
+                    // TODO: 29/02/2016 get actual UUID to set deviceState to INTENSITY_SETUP
+                    UUID uuid = new UUID(0, 0);
+                    BluetoothGattCharacteristic bluetoothGattCharacteristic = new BluetoothGattCharacteristic(uuid, 0, 0);
+                    mBluetoothGatt.writeCharacteristic(bluetoothGattCharacteristic);
+                }
+
                 Intent intent = new Intent(PrescriptionSetupActivity.this, IntensitySetupActivity.class);
                 startActivity(intent);
             }
@@ -76,6 +95,15 @@ public class PrescriptionSetupActivity extends Activity {
         cyclicModeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //Set deviceState in firmware to CYCLIC_MODE
+                if (mBluetoothGatt != null) {
+                    // TODO: 29/02/2016 get actual UUID for setting deviceState to CYCLIC_MODE
+                    UUID uuid = new UUID(0, 0);
+                    BluetoothGattCharacteristic bluetoothGattCharacteristic = new BluetoothGattCharacteristic(uuid, 0, 0);
+                    mBluetoothGatt.writeCharacteristic(bluetoothGattCharacteristic);
+                }
+
                 Intent intent = new Intent(PrescriptionSetupActivity.this, CyclicModeActivity.class);
                 startActivity(intent);
             }
@@ -85,6 +113,15 @@ public class PrescriptionSetupActivity extends Activity {
         testRunButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                //Set deviceState in firmware to RUN_MODE
+                if (mBluetoothGatt != null) {
+                    // TODO: 29/02/2016 get actual UUID to set deviceState to RUN_MODE
+                    UUID uuid = new UUID(0, 0);
+                    BluetoothGattCharacteristic bluetoothGattCharacteristic = new BluetoothGattCharacteristic(uuid, 0, 0);
+                    mBluetoothGatt.writeCharacteristic(bluetoothGattCharacteristic);
+                }
+
                 Intent intent = new Intent(PrescriptionSetupActivity.this, TestRunActivity.class);
                 startActivity(intent);
             }
