@@ -1,5 +1,6 @@
 package com.example.ronan.final_year_project;
 
+import android.app.ActionBar;
 import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -43,6 +44,8 @@ public class DeviceScanActivity extends ListActivity {
     private boolean mScanning;
     private LeDeviceListAdapter mLeDeviceListAdapter;
     private int listItemPosition;
+    private List<ScanFilter> filters = new ArrayList();
+    private ScanSettings settings;
     private static final long SCAN_PERIOD = 100000;
     private static final int REQUEST_ENABLE_BT = 1;
     private final ScanCallback mScanCallback = new ScanCallback() {
@@ -59,6 +62,18 @@ public class DeviceScanActivity extends ListActivity {
             });
             super.onScanResult(callbackType, result);
         }
+
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            Log.i(TAG, "Batch scan results"+results.toString());
+            super.onBatchScanResults(results);
+        }
+
+        @Override
+        public void onScanFailed(int errorCode) {
+            Log.e(TAG, "Scan failed: "+Integer.toString(errorCode));
+            super.onScanFailed(errorCode);
+        }
     };
     private final ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -72,7 +87,14 @@ public class DeviceScanActivity extends ListActivity {
             mBound = true;
 
             mBluetoothLeService.initialize();
-            mBluetoothLeService.connect(mLeDeviceListAdapter.getDevice(listItemPosition).getAddress());
+            boolean connected = mBluetoothLeService.connect(mLeDeviceListAdapter.getDevice(listItemPosition).getAddress());
+            if (connected) {
+                Toast toast = Toast.makeText(DeviceScanActivity.this, "Connected", Toast.LENGTH_SHORT);
+                toast.show();
+            } else {
+                Toast toast = Toast.makeText(DeviceScanActivity.this, "Something went wrong", Toast.LENGTH_SHORT);
+                toast.show();
+            }
         }
 
         @Override
@@ -80,13 +102,14 @@ public class DeviceScanActivity extends ListActivity {
             mBound = false;
         }
     };
-    private List<ScanFilter> filters = new ArrayList();
-    private ScanSettings settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_scan);
+
+        final ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         mLeDeviceListAdapter = new LeDeviceListAdapter();
         setListAdapter(mLeDeviceListAdapter);

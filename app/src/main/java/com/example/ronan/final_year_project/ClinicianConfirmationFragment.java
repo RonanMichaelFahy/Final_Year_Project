@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 
+import java.nio.ByteBuffer;
+
 public class ClinicianConfirmationFragment extends DialogFragment {
 
     private static final String TAG = ClinicianConfirmationFragment.class.getSimpleName();
@@ -18,6 +20,7 @@ public class ClinicianConfirmationFragment extends DialogFragment {
 
         final SharedPreferences mSharedPreferences = getActivity().getSharedPreferences("Stimulation_Parameters", Context.MODE_PRIVATE);
         final SharedPreferences.Editor mEditor = mSharedPreferences.edit();
+        final TestRunActivity parent = (TestRunActivity) getActivity();
 
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -26,6 +29,8 @@ public class ClinicianConfirmationFragment extends DialogFragment {
                 builder.setMessage("You have chosen a value of "+TestRunActivity.getRampUpTimeValue()+" for ramp-up time.")
                         .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                parent.mBluetoothLeService.writeCharacteristic(null, null, ByteBuffer.allocate(4).putInt(TestRunActivity.getRampUpTimeValue()).array());
+
                                 Log.i(TAG, "Setting ramp-up time");
                                 mEditor.putInt("Ramp_Up_Time", TestRunActivity.getRampUpTimeValue());
                                 mEditor.commit();
@@ -33,7 +38,7 @@ public class ClinicianConfirmationFragment extends DialogFragment {
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                Log.i(TAG, "Cancelled");
+                            Log.i(TAG, "Cancelled");
                             }
                         });
                 // Create the AlertDialog object and return it
@@ -43,6 +48,8 @@ public class ClinicianConfirmationFragment extends DialogFragment {
                 builder.setMessage("You have chosen a value of "+TestRunActivity.getRampDownTimeValue()+" for ramp-down time.")
                         .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                parent.mBluetoothLeService.writeCharacteristic(null, null, ByteBuffer.allocate(4).putInt(TestRunActivity.getRampDownTimeValue()).array());
+
                                 Log.i(TAG, "Setting ramp-down time");
                                 mEditor.putInt("Ramp_Down_Time", TestRunActivity.getRampDownTimeValue());
                                 mEditor.commit();
@@ -61,6 +68,8 @@ public class ClinicianConfirmationFragment extends DialogFragment {
             builder.setMessage("You have chosen a value of "+TestRunActivity.getPulseFrequencyValue()+" for pulse frequency.")
                     .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
+                            parent.mBluetoothLeService.writeCharacteristic(null, null, ByteBuffer.allocate(4).putInt(TestRunActivity.getPulseFrequencyValue()).array());
+
                             Log.i(TAG, "Setting pulse frequency");
                             mEditor.putInt("Pulse_Frequency", TestRunActivity.getPulseFrequencyValue());
                             mEditor.commit();
@@ -78,10 +87,11 @@ public class ClinicianConfirmationFragment extends DialogFragment {
             builder.setMessage("You have chosen a value of "+TestRunActivity.getPulseWidthValue()+" for pulse width.")
                     .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
+                            parent.mBluetoothLeService.writeCharacteristic(null, null, ByteBuffer.allocate(4).putInt(TestRunActivity.getPulseWidthValue()).array());
+
                             Log.i(TAG, "Setting pulse width: " + TestRunActivity.getPulseWidthValue());
                             mEditor.putInt("Pulse_Width", TestRunActivity.getPulseWidthValue());
-                            boolean written = mEditor.commit();
-                            Log.i(TAG, "Written: "+written);
+                            mEditor.commit();
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

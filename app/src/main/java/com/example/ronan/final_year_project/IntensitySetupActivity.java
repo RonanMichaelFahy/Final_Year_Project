@@ -1,7 +1,6 @@
 package com.example.ronan.final_year_project;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +17,7 @@ import android.widget.TextView;
 
 import com.example.ronan.final_year_project.BluetoothLeService.LocalBinder;
 
-import java.util.UUID;
+import java.nio.ByteBuffer;
 
 public class IntensitySetupActivity extends Activity {
 
@@ -78,9 +77,8 @@ public class IntensitySetupActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO: 20/02/2016 figure out what most and least significant bits of UUID are
-                UUID uuid = new UUID(10000001, 001122001122);
-                BluetoothGattCharacteristic bluetoothGattCharacteristic = new BluetoothGattCharacteristic(uuid, 0, 0);
-                mBluetoothLeService.writeCharacteristic(bluetoothGattCharacteristic);
+                boolean written = mBluetoothLeService.writeCharacteristic(null, null, new byte[0]);
+                Log.i(TAG, "Written: "+written);
             }
         });
 
@@ -90,10 +88,8 @@ public class IntensitySetupActivity extends Activity {
             public void onClick(View v) {
 
                 // TODO: 20/02/2016 figure out what most and least significant bits of UUID are
-                UUID uuid = new UUID(0, 0);
-                BluetoothGattCharacteristic bluetoothGattCharacteristic = new BluetoothGattCharacteristic(uuid, 0, 0);
-                bluetoothGattCharacteristic.setValue(Integer.toString(intensity));
-                mBluetoothLeService.writeCharacteristic(bluetoothGattCharacteristic);
+                boolean written = mBluetoothLeService.writeCharacteristic(null, null, ByteBuffer.allocate(4).putInt(intensity).array());
+                Log.i(TAG, "Written: "+written);
 
                 mEditor.putString("Sensory_Threshold", Integer.toString(intensity));
                 mEditor.commit();
@@ -105,10 +101,8 @@ public class IntensitySetupActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO: 20/02/2016 figure out UUID to write to motor threshold
-                UUID uuid = new UUID(0, 0);
-                BluetoothGattCharacteristic bluetoothGattCharacteristic = new BluetoothGattCharacteristic(uuid, 0, 0);
-                bluetoothGattCharacteristic.setValue(Integer.toString(intensity));
-                mBluetoothLeService.writeCharacteristic(bluetoothGattCharacteristic);
+                boolean written = mBluetoothLeService.writeCharacteristic(null, null, ByteBuffer.allocate(4).putInt(intensity).array());
+                Log.i(TAG, "Written: "+written);
 
                 mEditor.putString("Motor_Threshold", Integer.toString(intensity));
                 mEditor.commit();
@@ -120,10 +114,8 @@ public class IntensitySetupActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO: 20/02/2016 figure out UUID to write to pain threshold
-                UUID uuid = new UUID(0, 0);
-                BluetoothGattCharacteristic bluetoothGattCharacteristic = new BluetoothGattCharacteristic(uuid, 0, 0);
-                bluetoothGattCharacteristic.setValue(Integer.toString(intensity));
-                mBluetoothLeService.writeCharacteristic(bluetoothGattCharacteristic);
+                boolean written = mBluetoothLeService.writeCharacteristic(null, null, ByteBuffer.allocate(4).putInt(intensity).array());
+                Log.i(TAG, "Written: "+written);
 
                 mEditor.putString("Pain_Threshold", Integer.toString(intensity));
                 mEditor.commit();
@@ -135,10 +127,8 @@ public class IntensitySetupActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // TODO: 20/02/2016 figure out UUID to write to balanced dorsiflexion level
-                UUID uuid = new UUID(0, 0);
-                BluetoothGattCharacteristic bluetoothGattCharacteristic = new BluetoothGattCharacteristic(uuid, 0, 0);
-                bluetoothGattCharacteristic.setValue(Integer.toString(intensity));
-                mBluetoothLeService.writeCharacteristic(bluetoothGattCharacteristic);
+                boolean written = mBluetoothLeService.writeCharacteristic(null, null, ByteBuffer.allocate(4).putInt(intensity).array());
+                Log.i(TAG, "Written: "+written);
 
                 mEditor.putString("Balanced_Dorsiflexion_Level", Integer.toString(intensity));
                 mEditor.commit();

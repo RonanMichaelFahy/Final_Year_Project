@@ -16,6 +16,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import java.util.List;
+import java.util.UUID;
 
 public class BluetoothLeService extends Service {
 
@@ -150,12 +151,16 @@ public class BluetoothLeService extends Service {
         mBluetoothGatt.readCharacteristic(characteristic);
     }
 
-    public boolean writeCharacteristic(BluetoothGattCharacteristic characteristic) {
+    public boolean writeCharacteristic(UUID serviceUUID, UUID characteristicUUID, byte[] data) {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
             return false;
         }
-        return mBluetoothGatt.writeCharacteristic(characteristic);
+        BluetoothGattService mBluetoothGattService = mBluetoothGatt.getService(serviceUUID);
+        BluetoothGattCharacteristic mBluetoothGattCharacteristic = mBluetoothGattService.getCharacteristic(characteristicUUID);
+        mBluetoothGattCharacteristic.setValue(data);
+
+        return mBluetoothGatt.writeCharacteristic(mBluetoothGattCharacteristic);
     }
 
     @Override

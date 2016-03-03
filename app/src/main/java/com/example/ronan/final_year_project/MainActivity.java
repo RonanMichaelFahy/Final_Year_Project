@@ -1,9 +1,9 @@
 package com.example.ronan.final_year_project;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -18,16 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.parse.FindCallback;
-import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
-
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 public class MainActivity extends Activity {
 
@@ -61,10 +52,8 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // [Optional] Power your app with Local Datastore. For more info, go to
-        // https://parse.com/docs/android/guide#local-datastore
-        Parse.enableLocalDatastore(this);
-        Parse.initialize(this);
+        final ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         final Button run_button = (Button) findViewById(R.id.run_button);
         run_button.setOnClickListener(new View.OnClickListener() {
@@ -74,9 +63,7 @@ public class MainActivity extends Activity {
                 Log.i("MainActivity", "Run button clicked");
                 if (mBluetoothLeService != null) {
                     // TODO: 29/02/2016 get actual UUID to set deviceState to RUN_MODE
-                    UUID uuid = new UUID(0,0);
-                    BluetoothGattCharacteristic bluetoothGattCharacteristic = new BluetoothGattCharacteristic(uuid, 0, 0);
-                    boolean written = mBluetoothLeService.writeCharacteristic(bluetoothGattCharacteristic);
+                    boolean written = mBluetoothLeService.writeCharacteristic(null, null, new byte[0]);
                     Log.i(TAG, "Written: "+written);
                 }
 
@@ -93,28 +80,6 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, DeviceScanActivity.class);
                 startActivity(intent);
-            }
-        });
-
-        final Button uploadUsageDataButton = (Button) findViewById(R.id.upload_usage_data_button);
-        uploadUsageDataButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Upload the stimulation parameters which are stored locally
-                mSharedPreferences = getSharedPreferences("Stimulation_Parameters", MODE_PRIVATE);
-                Map<String, ?> parameters = mSharedPreferences.getAll();
-                for (final Map.Entry<String,?> entry : parameters.entrySet()) {
-                    Log.i(TAG, entry.getKey()+" : "+entry.getValue());
-                    ParseQuery<ParseObject> query = new ParseQuery("stimulation_parameters");
-                    query.whereEqualTo("user", ParseUser.getCurrentUser());
-                    query.findInBackground(new FindCallback<ParseObject>() {
-                        @Override
-                        public void done(List<ParseObject> objects, ParseException e) {
-                            objects.get(0).put(entry.getKey(), entry.getValue());
-                            objects.get(0).saveInBackground();
-                        }
-                    });
-                }
             }
         });
     }

@@ -1,7 +1,13 @@
 package com.example.ronan.final_year_project;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,6 +16,7 @@ import android.widget.SeekBar;
 
 public class TestRunActivity extends FragmentActivity {
 
+    private static final String TAG = TestRunActivity.class.getSimpleName();
     private Button savePulseWidthButton;
     private Button savePulseFrequencyButton;
     private Button saveRampUpTimeButton;
@@ -21,6 +28,27 @@ public class TestRunActivity extends FragmentActivity {
     private static int rampDownTimeValue;
     private static int pulseWidthValue;
     private static int pulseFrequencyValue;
+    private boolean mBound;
+    public BluetoothLeService mBluetoothLeService;
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            Log.i(TAG, "Service connected");
+            BluetoothLeService.LocalBinder localBinder = (BluetoothLeService.LocalBinder) service;
+            mBluetoothLeService = localBinder.getService();
+            mBound = true;
+
+            // TODO: 29/02/2016 get actual UUID to set deviceState to default
+            boolean written = mBluetoothLeService.writeCharacteristic(null, null, new byte[0]);
+            Log.i(TAG, "Written: "+written);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.i(TAG, "Service disconnected");
+            mBound = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +128,26 @@ public class TestRunActivity extends FragmentActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPause(){
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.i(TAG, "Resumed");
+        if (BluetoothLeService.running) {
+            Log.i(TAG, "Attempting to bind to service");
+            Intent intent = new Intent(this, BluetoothLeService.class);
+            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        }
+        super.onResume();
     }
 
     public static void setRampUpTimeValue(int rampUpTimeValue) {

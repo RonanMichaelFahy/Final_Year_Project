@@ -1,7 +1,7 @@
 package com.example.ronan.final_year_project;
 
+import android.app.ActionBar;
 import android.app.Activity;
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -26,7 +26,6 @@ import com.parse.SaveCallback;
 
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class PrescriptionSetupActivity extends Activity {
 
@@ -42,9 +41,8 @@ public class PrescriptionSetupActivity extends Activity {
             mBound = true;
 
             // TODO: 29/02/2016 get actual UUID to set deviceState to default
-            UUID uuid = new UUID(0, 0);
-            BluetoothGattCharacteristic bluetoothGattCharacteristic = new BluetoothGattCharacteristic(uuid, 0, 0);
-            mBluetoothLeService.writeCharacteristic(bluetoothGattCharacteristic);
+            boolean written = mBluetoothLeService.writeCharacteristic(null, null, new byte[0]);
+            Log.i(TAG, "Written: "+written);
         }
 
         @Override
@@ -59,6 +57,9 @@ public class PrescriptionSetupActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prescription_setup);
+
+        final ActionBar actionBar = getActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         final Button pairDevicesButton = (Button) findViewById(R.id.pair_devices_button);
         pairDevicesButton.setOnClickListener(new View.OnClickListener() {
@@ -77,9 +78,8 @@ public class PrescriptionSetupActivity extends Activity {
                 if (mBluetoothLeService != null) {
                     // TODO: 29/02/2016 get actual UUID to set deviceState to INTENSITY_SETUP
                     //Set deviceState in firmware to INTENSITY_SETUP
-                    UUID uuid = new UUID(0, 0);
-                    BluetoothGattCharacteristic bluetoothGattCharacteristic = new BluetoothGattCharacteristic(uuid, 0, 0);
-                    mBluetoothLeService.writeCharacteristic(bluetoothGattCharacteristic);
+                    boolean written = mBluetoothLeService.writeCharacteristic(null, null, new byte[0]);
+                    Log.i(TAG, "Written: "+written);
 
                     //Start intensity setup activity
                     Intent intent = new Intent(PrescriptionSetupActivity.this, IntensitySetupActivity.class);
@@ -99,9 +99,8 @@ public class PrescriptionSetupActivity extends Activity {
                 //Set deviceState in firmware to CYCLIC_MODE
                 if (mBluetoothLeService != null) {
                     // TODO: 29/02/2016 get actual UUID for setting deviceState to CYCLIC_MODE
-                    UUID uuid = new UUID(0, 0);
-                    BluetoothGattCharacteristic bluetoothGattCharacteristic = new BluetoothGattCharacteristic(uuid, 0, 0);
-                    mBluetoothLeService.writeCharacteristic(bluetoothGattCharacteristic);
+                    boolean written = mBluetoothLeService.writeCharacteristic(null, null, new byte[0]);
+                    Log.i(TAG, "Written: "+written);
 
                     Intent intent = new Intent(PrescriptionSetupActivity.this, CyclicModeActivity.class);
                     startActivity(intent);
@@ -120,9 +119,8 @@ public class PrescriptionSetupActivity extends Activity {
                 if (mBluetoothLeService != null) {
                     // TODO: 29/02/2016 get actual UUID to set deviceState to RUN_MODE
                     //Set deviceState in firmware to RUN_MODE
-                    UUID uuid = new UUID(0, 0);
-                    BluetoothGattCharacteristic bluetoothGattCharacteristic = new BluetoothGattCharacteristic(uuid, 0, 0);
-                    mBluetoothLeService.writeCharacteristic(bluetoothGattCharacteristic);
+                    boolean written = mBluetoothLeService.writeCharacteristic(null, null, new byte[0]);
+                    Log.i(TAG, "Written: "+written);
 
                     //Start test run activity
                     Intent intent = new Intent(PrescriptionSetupActivity.this, TestRunActivity.class);
@@ -198,11 +196,8 @@ public class PrescriptionSetupActivity extends Activity {
             return true;
         } else if (id == R.id.action_logout) {
             ParseUser.getCurrentUser().logOut();
-            /*Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            startActivity(intent);*/
-            finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
