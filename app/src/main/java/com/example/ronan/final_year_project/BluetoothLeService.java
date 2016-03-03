@@ -13,7 +13,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.Messenger;
 import android.util.Log;
 
 import java.util.List;
@@ -21,15 +20,14 @@ import java.util.List;
 public class BluetoothLeService extends Service {
 
     private static final String TAG = BluetoothLeService.class.getSimpleName();
-
     private final IBinder mBinder = new LocalBinder();
-
+    public static boolean running = false;
     private BluetoothManager mBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
     private String mBluetoothDeviceAddress;
     private static BluetoothGatt mBluetoothGatt;
     private int mConnectionState = STATE_DISCONNECTED;
-    private BluetoothDevice device;
+    private BluetoothDevice mBluetoothDevice;
 
     private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTING = 1;
@@ -46,8 +44,6 @@ public class BluetoothLeService extends Service {
     public final static String EXTRA_DATA =
             "com.example.bluetooth.le.EXTRA_DATA";
 
-    Messenger messenger;
-
     // Various callback methods defined by the BLE API.
     public final BluetoothGattCallback mGattCallback =
         new BluetoothGattCallback() {
@@ -59,12 +55,6 @@ public class BluetoothLeService extends Service {
                     intentAction = ACTION_GATT_CONNECTED;
                     mConnectionState = STATE_CONNECTED;
                     broadcastUpdate(intentAction);
-                    /*try {
-                        messenger.send(Message.obtain(null, DeviceScanActivity.MSG, 0, 0));
-                    } catch (RemoteException e) {
-                        System.err.println("BluetoothGattCallback Exception:");
-                        e.printStackTrace();
-                    }*/
                     Log.i(TAG, "Connected to GATT server.");
                 }
 
@@ -95,9 +85,6 @@ public class BluetoothLeService extends Service {
             }
         };
 
-    public BluetoothLeService() {
-    }
-
     public boolean initialize() {
         if (mBluetoothManager == null) {
             mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
@@ -108,14 +95,12 @@ public class BluetoothLeService extends Service {
         }
 
         mBluetoothAdapter = mBluetoothManager.getAdapter();
-        System.out.println("Bluetooth adapter: "+mBluetoothAdapter);
         if (mBluetoothAdapter == null) {
             Log.e(TAG, "Unable to obtain a BluetoothAdapter.");
             return false;
         }
 
-        messenger = new Messenger(mBinder);
-
+        running = true;
         return true;
     }
 
@@ -165,12 +150,12 @@ public class BluetoothLeService extends Service {
         mBluetoothGatt.readCharacteristic(characteristic);
     }
 
-    public void writeCharacteristic(BluetoothGattCharacteristic characteristic) {
+    public boolean writeCharacteristic(BluetoothGattCharacteristic characteristic) {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized");
-            return;
+            return false;
         }
-        mBluetoothGatt.writeCharacteristic(characteristic);
+        return mBluetoothGatt.writeCharacteristic(characteristic);
     }
 
     @Override
@@ -209,6 +194,7 @@ public class BluetoothLeService extends Service {
         if(mBluetoothGatt==null){
             return;
         }
+        running = false;
         mBluetoothGatt.close();
         mBluetoothGatt = null;
     }

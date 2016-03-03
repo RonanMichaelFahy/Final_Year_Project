@@ -83,6 +83,7 @@
             android:id="@+id/set_pain_threshold_button" />
 
         <Button
+            android:id="@+id/set_balanced_dorsiflexion_level_button"
             android:layout_width="150sp"
             android:layout_height="100sp"
             android:text="Set Balanced Dorsiflexion Level"

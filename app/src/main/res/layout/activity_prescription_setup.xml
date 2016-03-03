@@ -33,4 +33,13 @@
         android:layout_below="@+id/cyclic_mode_button"
         android:id="@+id/test_run_button" />
 
+    <Button
+        android:id="@+id/upload_usage_data_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Upload Usage Data"
+        android:layout_below="@+id/test_run_button"
+        android:layout_margin="5sp" />
+
+
 </RelativeLayout>
