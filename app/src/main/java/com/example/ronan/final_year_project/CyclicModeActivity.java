@@ -2,6 +2,7 @@ package com.example.ronan.final_year_project;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,8 +14,8 @@ public class CyclicModeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cyclic_mode);
 
-        final ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);
     }
 
     @Override
@@ -34,6 +35,9 @@ public class CyclicModeActivity extends Activity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == android.R.id.home){
+            Intent intent = new Intent(this, PrescriptionSetupActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

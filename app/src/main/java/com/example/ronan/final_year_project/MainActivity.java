@@ -1,14 +1,10 @@
 package com.example.ronan.final_year_project;
 
-import android.app.ActionBar;
 import android.app.Activity;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -23,11 +19,8 @@ import com.parse.ParseUser;
 public class MainActivity extends Activity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private SharedPreferences mSharedPreferences;
     private BluetoothLeService mBluetoothLeService;
     private boolean mBound;
-    private BluetoothGatt mBluetoothGatt;
-    private BluetoothDevice mBluetoothDevice;
     private ServiceConnection mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -36,9 +29,6 @@ public class MainActivity extends Activity {
             mBluetoothLeService = localBinder.getService();
             Log.i(TAG, "mBluetoothLeService: "+mBluetoothLeService.toString());
             mBound = true;
-
-            /*if (mBluetoothDevice!=null)
-                mBluetoothGatt = mBluetoothDevice.connectGatt(MainActivity.this, false, mBluetoothLeService.mGattCallback);*/
         }
 
         @Override
@@ -52,8 +42,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
 
         final Button run_button = (Button) findViewById(R.id.run_button);
         run_button.setOnClickListener(new View.OnClickListener() {
@@ -98,15 +86,15 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_login) {
+        if (id == R.id.action_login){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
-        } else if (id == R.id.action_sign_up) {
+        } else if (id == R.id.action_sign_up){
             Intent intent = new Intent(this, SignUpActivity.class);
             startActivity(intent);
-        } else if (id == R.id.action_logout) {
+        } else if (id == R.id.action_logout){
             ParseUser.getCurrentUser().logOut();
-        } else if (id == R.id.action_settings) {
+        } else if (id == R.id.action_settings){
             return true;
         }
 
@@ -116,12 +104,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         Log.i("MainActivity", "Resumed");
-        //Get BluetoothDevice object
-        /*SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("device", "");
-        Log.i("MainActivity", "json: "+json);
-        mBluetoothDevice = gson.fromJson(json, BluetoothDevice.class);*/
 
         if (BluetoothLeService.running) {
             Log.i(TAG, "Attempting to bind to service");

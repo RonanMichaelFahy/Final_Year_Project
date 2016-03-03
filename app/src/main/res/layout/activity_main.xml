@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="or login / sign up to configure FES parameters"
-        android:layout_below="@+id/upload_usage_data_button"
+        android:layout_below="@+id/pair_devices_button_main"
         android:layout_centerHorizontal="true"
         android:layout_margin="5sp"/>
 

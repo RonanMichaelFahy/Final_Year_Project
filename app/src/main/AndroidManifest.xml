@@ -18,7 +18,7 @@
         android:required="true" />
 
     <application
-        android:name="com.example.ronan.final_year_project.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="Final Year Project"
@@ -41,27 +41,33 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
+            android:windowSoftInputMode="adjustResize|stateVisible"
+            android:parentActivityName=".MainActivity" >
         </activity>
         <activity
             android:name=".PrescriptionSetupActivity"
-            android:label="Prescription Setup" >
+            android:label="Prescription Setup"
+            android:parentActivityName=".MainActivity" >
         </activity>
         <activity
             android:name=".IntensitySetupActivity"
-            android:label="Intensity Setup" >
+            android:label="Intensity Setup"
+            android:parentActivityName=".PrescriptionSetupActivity" >
         </activity>
         <activity
             android:name=".CyclicModeActivity"
-            android:label="Cyclic Mode" >
+            android:label="Cyclic Mode"
+            android:parentActivityName=".PrescriptionSetupActivity" >
         </activity>
         <activity
             android:name=".TestRunActivity"
-            android:label="Test Run" >
+            android:label="Test Run"
+            android:parentActivityName=".PrescriptionSetupActivity" >
         </activity>
         <activity
             android:name=".SignUpActivity"
-            android:label="Sign Up" >
+            android:label="Sign Up"
+            android:parentActivityName=".MainActivity">
         </activity>
         <activity
             android:name=".PatientPrescriptionSetupActivity"

@@ -109,6 +109,7 @@ public class DeviceScanActivity extends ListActivity {
         setContentView(R.layout.activity_device_scan);
 
         final ActionBar actionBar = getActionBar();
+        actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         mLeDeviceListAdapter = new LeDeviceListAdapter();
@@ -155,8 +156,12 @@ public class DeviceScanActivity extends ListActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings){
             return true;
+        } else if (id == android.R.id.home){
+            Log.i(TAG, "Back button pressed");
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivityForResult(intent, 1);
         }
 
         return super.onOptionsItemSelected(item);

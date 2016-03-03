@@ -125,6 +125,9 @@ public class TestRunActivity extends FragmentActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == android.R.id.home){
+            Intent intent = new Intent(this, PrescriptionSetupActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
