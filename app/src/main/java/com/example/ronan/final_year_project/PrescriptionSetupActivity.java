@@ -17,14 +17,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.ronan.final_year_project.BluetoothLeService.LocalBinder;
-import com.parse.FindCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 public class PrescriptionSetupActivity extends Activity {
@@ -32,6 +27,7 @@ public class PrescriptionSetupActivity extends Activity {
     private static final String TAG = PrescriptionSetupActivity.class.getSimpleName();
     private BluetoothLeService mBluetoothLeService;
     private boolean mBound;
+    private Bundle extras;
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -61,11 +57,14 @@ public class PrescriptionSetupActivity extends Activity {
         final ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        extras = getIntent().getExtras();
+
         final Button pairDevicesButton = (Button) findViewById(R.id.pair_devices_button);
         pairDevicesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(PrescriptionSetupActivity.this, DeviceScanActivity.class);
+                intent.putExtra("Calling_Activity", TAG);
                 startActivity(intent);
             }
         });
@@ -137,43 +136,15 @@ public class PrescriptionSetupActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //Upload the stimulation parameters which are stored locally
-                mSharedPreferences = getSharedPreferences("Stimulation_Parameters", MODE_PRIVATE);
-                Map<String, ?> parameters = mSharedPreferences.getAll();
-                Log.i(TAG, "Parameters to be uploaded: "+parameters);
-                for (final Map.Entry<String,?> entry : parameters.entrySet()) {
-                    Log.i(TAG, "Entry: "+entry.toString());
-                    ParseQuery<ParseObject> query = new ParseQuery("stimulation_parameters");
-                    query.whereEqualTo("user", ParseUser.getCurrentUser());
-                    query.findInBackground(new FindCallback<ParseObject>() {
-                        @Override
-                        public void done(List<ParseObject> objects, ParseException e) {
-                            Log.i(TAG, "Writing objects");
-                            if (objects != null && objects.size() != 0) { //if there is an existing entry for this user
-                                Log.i(TAG, "Updating existing entry for this user");
-                                objects.get(0).put(entry.getKey(), entry.getValue());
-                                objects.get(0).saveInBackground();
-                            } else { //if there is no existing entry for this user
-                                Log.i(TAG, "Creating new entry for this user");
-                                ParseObject parseObject = new ParseObject("stimulation_parameters");
-                                parseObject.put("user", ParseUser.getCurrentUser());
-                                parseObject.put(entry.getKey(), entry.getValue());
-                                parseObject.saveInBackground(new SaveCallback() {
-                                    @Override
-                                    public void done(ParseException e) {
-                                        if (e == null){
-                                            Log.i(TAG, "Object saved");
-                                            Toast toast = Toast.makeText(PrescriptionSetupActivity.this, "Object saved", Toast.LENGTH_SHORT);
-                                            toast.show();
-                                        } else {
-                                            Log.e(TAG, "ParseException");
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-                            }
-                        }
-                    });
-                }
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSharedPreferences = getSharedPreferences("Stimulation_Parameters", MODE_PRIVATE);
+                        Map<String, ?> parameters = mSharedPreferences.getAll();
+                        uploadUsageData((HashMap) parameters);
+                    }
+                });
+                thread.start();
             }
         });
     }
@@ -198,6 +169,17 @@ public class PrescriptionSetupActivity extends Activity {
             ParseUser.getCurrentUser().logOut();
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+        } else if (id == android.R.id.home){
+            if (extras == null)
+                return super.onOptionsItemSelected(item);
+
+            if (extras.get("Calling_Activity").equals("LoginActivity")){
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+            } else if (extras.get("Calling_Activity").equals("SignUpActivity")){
+                Intent intent = new Intent(this, SignUpActivity.class);
+                startActivity(intent);
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -221,5 +203,43 @@ public class PrescriptionSetupActivity extends Activity {
             bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         }
         super.onResume();
+    }
+
+    private void uploadUsageData(HashMap parameters) {
+        Log.i(TAG, "Parameters to be uploaded: " + parameters);
+        /*for (final Map.Entry<String, ?> entry : parameters.entrySet()) {
+            Log.i(TAG, "Entry: "+entry.toString());
+            ParseQuery<ParseObject> query = new ParseQuery("stimulation_parameters");
+            query.whereEqualTo("user", ParseUser.getCurrentUser());
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> objects, ParseException e) {
+                    Log.i(TAG, "Writing objects on "+Thread.currentThread().getName()+"thread");
+                    if (objects != null && objects.size() != 0) { //if there is an existing entry for this user
+                        Log.i(TAG, "Updating existing entry for this user");
+                        objects.get(0).put(entry.getKey(), entry.getValue());
+                        objects.get(0).saveInBackground();
+                    } else { //if there is no existing entry for this user
+                        Log.i(TAG, "Creating new entry for this user");
+                        ParseObject parseObject = new ParseObject("stimulation_parameters");
+                        parseObject.put("user", ParseUser.getCurrentUser());
+                        parseObject.put(entry.getKey(), entry.getValue());
+                        parseObject.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null){
+                                    Log.i(TAG, "Object saved");
+                                    Toast toast = Toast.makeText(PrescriptionSetupActivity.this, "Object saved", Toast.LENGTH_SHORT);
+                                    toast.show();
+                                } else {
+                                    Log.e(TAG, "ParseException");
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }*/
     }
 }

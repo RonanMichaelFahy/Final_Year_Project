@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -22,6 +23,7 @@ import com.parse.ParseUser;
  */
 public class LoginActivity extends Activity {
 
+    private static final String TAG = LoginActivity.class.getSimpleName();
     private EditText usernameEditText;
     private EditText passwordEditText;
 
@@ -31,7 +33,9 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
 
         final ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         usernameEditText = (EditText) findViewById(R.id.username_edit_text);
         passwordEditText = (EditText) findViewById(R.id.password_edit_text);
@@ -54,6 +58,23 @@ public class LoginActivity extends Activity {
                 login();
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id){
+            case android.R.id.home : {
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void login() {
@@ -99,6 +120,7 @@ public class LoginActivity extends Activity {
                     // Start an intent for the dispatch activity
                     Intent intent = new Intent(LoginActivity.this, PrescriptionSetupActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("Calling_Activity", TAG);
                     startActivity(intent);
                 }
             }

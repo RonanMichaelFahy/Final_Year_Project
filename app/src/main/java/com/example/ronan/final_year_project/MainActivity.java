@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.parse.ParseUser;
 
 public class MainActivity extends Activity {
@@ -42,7 +41,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         final Button run_button = (Button) findViewById(R.id.run_button);
         run_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +65,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, DeviceScanActivity.class);
+                intent.putExtra("Calling_Activity", TAG);
                 startActivity(intent);
             }
         });
@@ -88,6 +87,7 @@ public class MainActivity extends Activity {
 
         if (id == R.id.action_login){
             Intent intent = new Intent(this, LoginActivity.class);
+            intent.putExtra("Calling_Activity", TAG);
             startActivity(intent);
         } else if (id == R.id.action_sign_up){
             Intent intent = new Intent(this, SignUpActivity.class);

@@ -48,6 +48,7 @@ public class DeviceScanActivity extends ListActivity {
     private ScanSettings settings;
     private static final long SCAN_PERIOD = 100000;
     private static final int REQUEST_ENABLE_BT = 1;
+    private Bundle extras;
     private final ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, final ScanResult result) {
@@ -112,6 +113,8 @@ public class DeviceScanActivity extends ListActivity {
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        extras = getIntent().getExtras();
+
         mLeDeviceListAdapter = new LeDeviceListAdapter();
         setListAdapter(mLeDeviceListAdapter);
 
@@ -128,7 +131,14 @@ public class DeviceScanActivity extends ListActivity {
 
         else {
             mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
-            scanDevice(!mScanning);
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    scanDevice(!mScanning);
+                }
+            });
+            thread.start();
+            //scanDevice(!mScanning);
         }
     }
 
@@ -159,9 +169,13 @@ public class DeviceScanActivity extends ListActivity {
         if (id == R.id.action_settings){
             return true;
         } else if (id == android.R.id.home){
-            Log.i(TAG, "Back button pressed");
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivityForResult(intent, 1);
+            if (extras.get("Calling_Activity").equals("MainActivity")){
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            } else if (extras.get("Calling_Activity").equals("PrescriptionSetupActivity")){
+                Intent intent = new Intent(this, PrescriptionSetupActivity.class);
+                startActivity(intent);
+            }
         }
 
         return super.onOptionsItemSelected(item);

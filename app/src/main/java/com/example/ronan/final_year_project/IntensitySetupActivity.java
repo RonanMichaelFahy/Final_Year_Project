@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.example.ronan.final_year_project.BluetoothLeService.LocalBinder;
 
 import java.nio.ByteBuffer;
+import java.util.UUID;
 
 public class IntensitySetupActivity extends Activity {
 
@@ -87,8 +88,10 @@ public class IntensitySetupActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                // TODO: 20/02/2016 figure out what most and least significant bits of UUID are
-                boolean written = mBluetoothLeService.writeCharacteristic(null, null, ByteBuffer.allocate(4).putInt(intensity).array());
+                UUID serviceUUID = UUID.fromString("a6322521-0000-2000-9000-001122001122");
+                // TODO: 20/02/2016 include characteristic UUID when characteristic has been created in device firmware
+                UUID characteristicUUID = UUID.fromString("");
+                boolean written = mBluetoothLeService.writeCharacteristic(serviceUUID, characteristicUUID, ByteBuffer.allocate(4).putInt(intensity).array());
                 Log.i(TAG, "Written: "+written);
 
                 mEditor.putString("Sensory_Threshold", Integer.toString(intensity));
@@ -100,8 +103,11 @@ public class IntensitySetupActivity extends Activity {
         motorThresholdButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 20/02/2016 figure out UUID to write to motor threshold
-                boolean written = mBluetoothLeService.writeCharacteristic(null, null, ByteBuffer.allocate(4).putInt(intensity).array());
+                UUID serviceUUID = UUID.fromString("a6322521-0000-2000-9000-001122001122");
+                // TODO: 20/02/2016 include characteristic UUID when characteristic has been created in device firmware
+                UUID characteristicUUID = UUID.fromString("");
+                boolean written = mBluetoothLeService.writeCharacteristic(serviceUUID, characteristicUUID,
+                        ByteBuffer.allocate(4).putInt(intensity).array());
                 Log.i(TAG, "Written: "+written);
 
                 mEditor.putString("Motor_Threshold", Integer.toString(intensity));
@@ -113,8 +119,11 @@ public class IntensitySetupActivity extends Activity {
         painThresholdButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 20/02/2016 figure out UUID to write to pain threshold
-                boolean written = mBluetoothLeService.writeCharacteristic(null, null, ByteBuffer.allocate(4).putInt(intensity).array());
+                UUID serviceUUID = UUID.fromString("a6322521-0000-2000-9000-001122001122");
+                // TODO: 20/02/2016 include characteristic UUID when characteristic has been created in device firmware
+                UUID characteristicUUID = UUID.fromString("");
+                boolean written = mBluetoothLeService.writeCharacteristic(serviceUUID, characteristicUUID,
+                        ByteBuffer.allocate(4).putInt(intensity).array());
                 Log.i(TAG, "Written: "+written);
 
                 mEditor.putString("Pain_Threshold", Integer.toString(intensity));
@@ -126,8 +135,11 @@ public class IntensitySetupActivity extends Activity {
         balancedDorsiflexionLevelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 20/02/2016 figure out UUID to write to balanced dorsiflexion level
-                boolean written = mBluetoothLeService.writeCharacteristic(null, null, ByteBuffer.allocate(4).putInt(intensity).array());
+                UUID serviceUUID = UUID.fromString("a6322521-0000-2000-9000-001122001122");
+                // TODO: 20/02/2016 include characteristic UUID when characteristic has been created in device firmware
+                UUID characteristicUUID = UUID.fromString("");
+                boolean written = mBluetoothLeService.writeCharacteristic(serviceUUID, characteristicUUID,
+                        ByteBuffer.allocate(4).putInt(intensity).array());
                 Log.i(TAG, "Written: "+written);
 
                 mEditor.putString("Balanced_Dorsiflexion_Level", Integer.toString(intensity));

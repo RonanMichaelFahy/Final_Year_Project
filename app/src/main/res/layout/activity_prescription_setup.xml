@@ -38,8 +38,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Upload Usage Data"
-        android:layout_below="@+id/test_run_button"
-        android:layout_margin="5sp" />
+        android:layout_below="@+id/test_run_button" />
 
 
 </RelativeLayout>

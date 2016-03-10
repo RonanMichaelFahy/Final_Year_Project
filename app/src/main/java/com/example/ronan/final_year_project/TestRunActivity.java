@@ -63,7 +63,7 @@ public class TestRunActivity extends FragmentActivity {
                 setPulseWidthValue(pulseWidthSeekBar.getProgress());
                 setRamp(false);
                 setUpOrFrequency(false);
-                ClinicianConfirmationFragment confirmation = new ClinicianConfirmationFragment();
+                ConfirmationFragment confirmation = new ConfirmationFragment();
                 confirmation.show(getSupportFragmentManager(), "fragment_confirmation");
             }
         });
@@ -76,7 +76,7 @@ public class TestRunActivity extends FragmentActivity {
                 setPulseFrequencyValue(pulseFrequencySeekBar.getProgress());
                 setRamp(false);
                 setUpOrFrequency(true);
-                ClinicianConfirmationFragment confirmation = new ClinicianConfirmationFragment();
+                ConfirmationFragment confirmation = new ConfirmationFragment();
                 confirmation.show(getSupportFragmentManager(), "fragment_confirmation");
             }
         });
@@ -89,7 +89,7 @@ public class TestRunActivity extends FragmentActivity {
                 setRampUpTimeValue(rampUpTimeSeekBar.getProgress());
                 setRamp(true);
                 setUpOrFrequency(true);
-                ClinicianConfirmationFragment confirmation = new ClinicianConfirmationFragment();
+                ConfirmationFragment confirmation = new ConfirmationFragment();
                 confirmation.show(getSupportFragmentManager(), "fragment_confirmation");
             }
         });
@@ -102,7 +102,7 @@ public class TestRunActivity extends FragmentActivity {
                 setRampDownTimeValue(rampDownTimeSeekBar.getProgress());
                 setRamp(true);
                 setUpOrFrequency(false);
-                ClinicianConfirmationFragment confirmation = new ClinicianConfirmationFragment();
+                ConfirmationFragment confirmation = new ConfirmationFragment();
                 confirmation.show(getSupportFragmentManager(), "fragment_confirmation");
             }
         });

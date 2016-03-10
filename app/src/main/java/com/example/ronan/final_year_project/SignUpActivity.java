@@ -18,6 +18,7 @@ import com.parse.SignUpCallback;
 
 public class SignUpActivity extends Activity {
 
+    private static final String TAG = SignUpActivity.class.getSimpleName();
     private EditText usernameEditText;
     private EditText passwordEditText;
     private EditText passwordAgainEditText;
@@ -40,6 +41,30 @@ public class SignUpActivity extends Activity {
                 signup();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_sign_up, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id){
+            case android.R.id.home : {
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void signup() {
@@ -101,33 +126,11 @@ public class SignUpActivity extends Activity {
 
                     // Start an intent for the dispatch activity
                     Intent intent = new Intent(SignUpActivity.this, PrescriptionSetupActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                            Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("Calling_Activity", TAG);
                     startActivity(intent);
                 }
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_sign_up, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
