@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ronan.final_year_project" >
+    package="com.example.ronan.final_year_project">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -35,60 +36,64 @@
             android:label="Final Year Project">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
-            android:windowSoftInputMode="adjustResize|stateVisible"
-            android:parentActivityName=".MainActivity" >
-        </activity>
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="adjustResize|stateVisible"></activity>
         <activity
             android:name=".PrescriptionSetupActivity"
             android:label="Prescription Setup"
-            android:parentActivityName=".MainActivity" >
-        </activity>
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".IntensitySetupActivity"
             android:label="Intensity Setup"
-            android:parentActivityName=".PrescriptionSetupActivity" >
-        </activity>
+            android:parentActivityName=".PrescriptionSetupActivity"></activity>
         <activity
             android:name=".CyclicModeActivity"
             android:label="Cyclic Mode"
-            android:parentActivityName=".PrescriptionSetupActivity" >
-        </activity>
+            android:parentActivityName=".PrescriptionSetupActivity"></activity>
         <activity
             android:name=".TestRunActivity"
             android:label="Test Run"
-            android:parentActivityName=".PrescriptionSetupActivity" >
-        </activity>
+            android:parentActivityName=".PrescriptionSetupActivity"></activity>
         <activity
             android:name=".SignUpActivity"
             android:label="Sign Up"
-            android:parentActivityName=".MainActivity">
-        </activity>
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".PatientPrescriptionSetupActivity"
-            android:label="@string/title_activity_patient_prescription_setup" >
-        </activity>
+            android:label="@string/title_activity_patient_prescription_setup"></activity>
         <activity
             android:name=".PatientTestRunActivity"
-            android:label="@string/title_activity_patient_test_run" >
-        </activity>
+            android:label="@string/title_activity_patient_test_run"></activity>
         <activity
             android:name=".DeviceScanActivity"
-            android:label="Bluetooth Setup" >
-        </activity>
+            android:label="Bluetooth Setup"></activity>
+
         <service
             android:name=".BluetoothLeService"
             android:enabled="true"
-            android:exported="true" >
-        </service>
+            android:exported="true"></service>
+
         <activity
             android:name=".DeviceControlActivity"
-            android:label="@string/title_activity_device_control" >
-        </activity>
+            android:label="@string/title_activity_device_control"></activity>
+        <!--
+             ATTENTION: This was auto-generated to add Google Play services to your project for
+             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".RunActivity"
+            android:label="@string/title_activity_run"></activity>
     </application>
+
 </manifest>

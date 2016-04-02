@@ -32,10 +32,10 @@ public class ConfirmationFragment extends DialogFragment {
                         .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 final UUID rampUpTimeUUID = UUID.fromString("40001000-0000-2000-9000-001122001122");
-                                parent.mBluetoothLeService.writeCharacteristic(stimulationProfileServiceUUID, rampUpTimeUUID,
+                                boolean written = parent.mBluetoothLeService.writeCharacteristic(stimulationProfileServiceUUID, rampUpTimeUUID,
                                         ByteBuffer.allocate(4).putInt(TestRunActivity.getRampUpTimeValue()).array());
 
-                                Log.i(TAG, "Setting ramp-up time");
+                                Log.i(TAG, "Ramp-up time written: "+written);
                                 mEditor.putInt("Ramp_Up_Time", TestRunActivity.getRampUpTimeValue());
                                 mEditor.commit();
                             }

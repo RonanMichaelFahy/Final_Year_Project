@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 import com.parse.ParseUser;
@@ -42,7 +43,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         final Button run_button = (Button) findViewById(R.id.run_button);
-        run_button.setOnClickListener(new View.OnClickListener() {
+        run_button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -66,6 +67,15 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, DeviceScanActivity.class);
                 intent.putExtra("Calling_Activity", TAG);
+                startActivity(intent);
+            }
+        });
+
+        final Button run_mode_button = (Button) findViewById(R.id.runModeButton);
+        run_mode_button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, RunActivity.class);
                 startActivity(intent);
             }
         });

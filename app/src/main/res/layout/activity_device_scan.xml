@@ -6,10 +6,21 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.example.ronan.final_year_project.DeviceScanActivity">
 
+    <TextView
+        android:id="@+id/device_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Click on a device to connect to it"
+        android:gravity="center"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:paddingBottom="10sp"/>
+
     <ListView
         android:id="@android:id/list"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/device_list">
     </ListView>
 
 </RelativeLayout>

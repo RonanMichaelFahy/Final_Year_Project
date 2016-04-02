@@ -26,7 +26,7 @@ public class PatientTestRunActivity extends FragmentActivity {
                 final SeekBar rampUpTimeSeekBar = (SeekBar) findViewById(R.id.rampUpTimeSeekBar);
                 setRampUpTimeValue(rampUpTimeSeekBar.getProgress());
                 setUp(true);
-                PatientConfirmationFragment confirmation = new PatientConfirmationFragment();
+                ConfirmationFragment confirmation = new ConfirmationFragment();
                 confirmation.show(getSupportFragmentManager(), "fragment_confirmation");
             }
         });
@@ -38,7 +38,7 @@ public class PatientTestRunActivity extends FragmentActivity {
                 final SeekBar rampDownTimeSeekBar = (SeekBar) findViewById(R.id.rampDownTimeSeekBar);
                 setRampDownTimeValue(rampDownTimeSeekBar.getProgress());
                 setUp(false);
-                PatientConfirmationFragment confirmation = new PatientConfirmationFragment();
+                ConfirmationFragment confirmation = new ConfirmationFragment();
                 confirmation.show(getSupportFragmentManager(), "fragment_confirmation");
             }
         });

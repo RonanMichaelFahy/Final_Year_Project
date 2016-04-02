@@ -111,7 +111,7 @@ public class TestRunActivity extends FragmentActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_test_run, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -148,7 +148,8 @@ public class TestRunActivity extends FragmentActivity {
         if (BluetoothLeService.running) {
             Log.i(TAG, "Attempting to bind to service");
             Intent intent = new Intent(this, BluetoothLeService.class);
-            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+            mBound = bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+            Log.i(TAG, "Bound: "+mBound);
         }
         super.onResume();
     }

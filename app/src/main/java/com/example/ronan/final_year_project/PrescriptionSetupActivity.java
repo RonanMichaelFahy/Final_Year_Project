@@ -152,7 +152,7 @@ public class PrescriptionSetupActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_prescription_setup, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -200,8 +200,10 @@ public class PrescriptionSetupActivity extends Activity {
         if (BluetoothLeService.running) {
             Log.i(TAG, "Attempting to bind to service");
             Intent intent = new Intent(this, BluetoothLeService.class);
-            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+            mBound = bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+            Log.i(TAG, "Bound: "+mBound);
         }
+        Log.i(TAG, "Bluetooth Service Running: "+BluetoothLeService.running);
         super.onResume();
     }
 
