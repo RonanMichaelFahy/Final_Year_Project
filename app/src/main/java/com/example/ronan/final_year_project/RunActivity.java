@@ -59,9 +59,9 @@ public class RunActivity extends Activity implements SensorEventListener {
             Log.i(TAG, gravity[0] + " " + gravity[1] + " " + gravity[2]);
 
             try {
-                fileWriter.append((char) gravity[0]).append(", ");
-                fileWriter1.append((char) gravity[1]).append(", ");
-                fileWriter2.append((char) gravity[2]).append(", ");
+                fileWriter.append(Float.toString(raw[0])).append(", ");
+                fileWriter1.append(Float.toString(raw[1])).append(", ");
+                fileWriter2.append(Float.toString(raw[2])).append(", ");
             } catch (IOException e) {
                 e.printStackTrace();
             }
