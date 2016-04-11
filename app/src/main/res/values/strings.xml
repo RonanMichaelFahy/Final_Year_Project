@@ -40,4 +40,8 @@
     <string name="label_data">Data:\t</string>
     <string name="menu_connect">connect</string>
     <string name="menu_disconnect">disconnect</string>
+    <string name="title_activity_view_output">ViewOutputActivity</string>
+    <string name="run">STOP DROP FOOT STIMULATOR</string>
+    <string name="stop">RUN DROP FOOT STIMULATOR</string>
+    <string name="not_paired">Please pair with drop foot stimulator first</string>
 </resources>

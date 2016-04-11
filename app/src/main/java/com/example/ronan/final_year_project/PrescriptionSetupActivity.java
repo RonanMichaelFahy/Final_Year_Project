@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
@@ -17,17 +18,22 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.ronan.final_year_project.BluetoothLeService.LocalBinder;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PrescriptionSetupActivity extends Activity {
 
-    private static final String TAG = PrescriptionSetupActivity.class.getSimpleName();
+    public static final String TAG = PrescriptionSetupActivity.class.getSimpleName();
+    private SharedPreferences mSharedPreferences;
     private BluetoothLeService mBluetoothLeService;
     private boolean mBound;
-    private Bundle extras;
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -35,10 +41,6 @@ public class PrescriptionSetupActivity extends Activity {
             LocalBinder localBinder = (LocalBinder) service;
             mBluetoothLeService = localBinder.getService();
             mBound = true;
-
-            // TODO: 29/02/2016 get actual UUID to set deviceState to default
-            boolean written = mBluetoothLeService.writeCharacteristic(null, null, new byte[0]);
-            Log.i(TAG, "Written: "+written);
         }
 
         @Override
@@ -47,17 +49,18 @@ public class PrescriptionSetupActivity extends Activity {
             mBound = false;
         }
     };
-    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prescription_setup);
 
-        final ActionBar actionBar = getActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        mSharedPreferences = getSharedPreferences("Stimulation_Parameters", MODE_PRIVATE);
+        //SharedPreferences.Editor mEditor = mSharedPreferences.edit();
 
-        extras = getIntent().getExtras();
+        final ActionBar actionBar = getActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         final Button pairDevicesButton = (Button) findViewById(R.id.pair_devices_button);
         pairDevicesButton.setOnClickListener(new View.OnClickListener() {
@@ -75,8 +78,6 @@ public class PrescriptionSetupActivity extends Activity {
             public void onClick(View v) {
 
                 if (mBluetoothLeService != null) {
-                    // TODO: 29/02/2016 get actual UUID to set deviceState to INTENSITY_SETUP
-                    //Set deviceState in firmware to INTENSITY_SETUP
                     boolean written = mBluetoothLeService.writeCharacteristic(null, null, new byte[0]);
                     Log.i(TAG, "Written: "+written);
 
@@ -84,7 +85,7 @@ public class PrescriptionSetupActivity extends Activity {
                     Intent intent = new Intent(PrescriptionSetupActivity.this, IntensitySetupActivity.class);
                     startActivity(intent);
                 } else {
-                    Toast toast = Toast.makeText(PrescriptionSetupActivity.this, "Please pair with CueStim device first", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(PrescriptionSetupActivity.this, R.string.not_paired, Toast.LENGTH_SHORT);
                     toast.show();
                 }
             }
@@ -97,14 +98,10 @@ public class PrescriptionSetupActivity extends Activity {
 
                 //Set deviceState in firmware to CYCLIC_MODE
                 if (mBluetoothLeService != null) {
-                    // TODO: 29/02/2016 get actual UUID for setting deviceState to CYCLIC_MODE
-                    boolean written = mBluetoothLeService.writeCharacteristic(null, null, new byte[0]);
-                    Log.i(TAG, "Written: "+written);
-
                     Intent intent = new Intent(PrescriptionSetupActivity.this, CyclicModeActivity.class);
                     startActivity(intent);
                 } else {
-                    Toast toast = Toast.makeText(PrescriptionSetupActivity.this, "Please pair with CueStim device first", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(PrescriptionSetupActivity.this, R.string.not_paired, Toast.LENGTH_SHORT);
                     toast.show();
                 }
             }
@@ -116,8 +113,6 @@ public class PrescriptionSetupActivity extends Activity {
             public void onClick(View v) {
 
                 if (mBluetoothLeService != null) {
-                    // TODO: 29/02/2016 get actual UUID to set deviceState to RUN_MODE
-                    //Set deviceState in firmware to RUN_MODE
                     boolean written = mBluetoothLeService.writeCharacteristic(null, null, new byte[0]);
                     Log.i(TAG, "Written: "+written);
 
@@ -125,7 +120,7 @@ public class PrescriptionSetupActivity extends Activity {
                     Intent intent = new Intent(PrescriptionSetupActivity.this, TestRunActivity.class);
                     startActivity(intent);
                 } else {
-                    Toast toast = Toast.makeText(PrescriptionSetupActivity.this, "Please pair with CueStim device first", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(PrescriptionSetupActivity.this, R.string.not_paired, Toast.LENGTH_SHORT);
                     toast.show();
                 }
             }
@@ -135,16 +130,33 @@ public class PrescriptionSetupActivity extends Activity {
         uploadUsageDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                downloadUsageData();
+
                 //Upload the stimulation parameters which are stored locally
-                Thread thread = new Thread(new Runnable() {
+                Handler handler = new Handler();
+                handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        mSharedPreferences = getSharedPreferences("Stimulation_Parameters", MODE_PRIVATE);
                         Map<String, ?> parameters = mSharedPreferences.getAll();
-                        uploadUsageData((HashMap) parameters);
+                        for (Map.Entry<String, ?> entry : parameters.entrySet()) {
+                            ParseQuery<ParseObject> query = new ParseQuery<>("stimulation_parameters");
+                            uploadUsageData(entry, query);
+                        }
                     }
                 });
-                thread.start();
+
+                /*Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Map<String, ?> parameters = mSharedPreferences.getAll();
+                        for (Map.Entry<String, ?> entry : parameters.entrySet()) {
+                            ParseQuery<ParseObject> query = new ParseQuery<>("stimulation_parameters");
+                            uploadUsageData(entry, query);
+                        }
+                    }
+                });
+                thread.start();*/
             }
         });
     }
@@ -163,25 +175,24 @@ public class PrescriptionSetupActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.action_logout) {
-            ParseUser.getCurrentUser().logOut();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-        } else if (id == android.R.id.home){
-            if (extras == null)
-                return super.onOptionsItemSelected(item);
-
-            if (extras.get("Calling_Activity").equals("LoginActivity")){
-                Intent intent = new Intent(this, LoginActivity.class);
-                startActivity(intent);
-            } else if (extras.get("Calling_Activity").equals("SignUpActivity")){
+        switch (id){
+            case R.id.action_login:
+                Intent i = new Intent(this, LoginActivity.class);
+                i.putExtra("Calling_Activity", TAG);
+                startActivity(i);
+                break;
+            case R.id.action_sign_up:
                 Intent intent = new Intent(this, SignUpActivity.class);
                 startActivity(intent);
-            }
+                break;
+            case R.id.action_logout:
+                ParseUser.logOut();
+                intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.action_settings:
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -201,47 +212,59 @@ public class PrescriptionSetupActivity extends Activity {
             Log.i(TAG, "Attempting to bind to service");
             Intent intent = new Intent(this, BluetoothLeService.class);
             mBound = bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-            Log.i(TAG, "Bound: "+mBound);
+            Log.i(TAG, "Bound: " + mBound);
         }
         Log.i(TAG, "Bluetooth Service Running: "+BluetoothLeService.running);
         super.onResume();
     }
 
-    private void uploadUsageData(HashMap parameters) {
-        Log.i(TAG, "Parameters to be uploaded: " + parameters);
-        /*for (final Map.Entry<String, ?> entry : parameters.entrySet()) {
-            Log.i(TAG, "Entry: "+entry.toString());
-            ParseQuery<ParseObject> query = new ParseQuery("stimulation_parameters");
-            query.whereEqualTo("user", ParseUser.getCurrentUser());
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> objects, ParseException e) {
-                    Log.i(TAG, "Writing objects on "+Thread.currentThread().getName()+"thread");
-                    if (objects != null && objects.size() != 0) { //if there is an existing entry for this user
-                        Log.i(TAG, "Updating existing entry for this user");
-                        objects.get(0).put(entry.getKey(), entry.getValue());
-                        objects.get(0).saveInBackground();
-                    } else { //if there is no existing entry for this user
-                        Log.i(TAG, "Creating new entry for this user");
-                        ParseObject parseObject = new ParseObject("stimulation_parameters");
-                        parseObject.put("user", ParseUser.getCurrentUser());
-                        parseObject.put(entry.getKey(), entry.getValue());
-                        parseObject.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(ParseException e) {
-                                if (e == null){
-                                    Log.i(TAG, "Object saved");
-                                    Toast toast = Toast.makeText(PrescriptionSetupActivity.this, "Object saved", Toast.LENGTH_SHORT);
-                                    toast.show();
-                                } else {
-                                    Log.e(TAG, "ParseException");
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    private void downloadUsageData() {
+
+    }
+
+    private void uploadUsageData(final Map.Entry<String, ?> entry, ParseQuery<ParseObject> query) {
+
+        Log.i(TAG, entry.getKey());
+        query.whereEqualTo("user", ParseUser.getCurrentUser());
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> objects, ParseException e) {
+                Log.i(TAG, "Writing objects on " + Thread.currentThread().getName() + "thread");
+                if (objects != null && objects.size() != 0) { //if there is an existing entry for this user
+                    Log.i(TAG, entry.getKey()+": "+entry.getValue().getClass().getName());
+                    objects.get(0).put(entry.getKey(), entry.getValue());
+                    try {
+                        objects.get(0).save();
+                    } catch (ParseException e1) {
+                        e1.printStackTrace();
                     }
+                } else { //if there is no existing entry for this user
+                    Log.i(TAG, "Creating new entry for this user");
+                    ParseObject parseObject = new ParseObject("stimulation_parameters");
+                    parseObject.put("user", ParseUser.getCurrentUser());
+                    parseObject.put(entry.getKey(), entry.getValue());
+                    parseObject.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Log.i(TAG, "Object saved");
+                                Toast toast = Toast.makeText(PrescriptionSetupActivity.this, "Object saved", Toast.LENGTH_SHORT);
+                                toast.show();
+                            } else {
+                                Log.e(TAG, "ParseException");
+                                e.printStackTrace();
+                            }
+                        }
+                    });
                 }
-            });
-        }*/
+            }
+        });
     }
 }

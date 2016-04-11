@@ -71,6 +71,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/fourth_level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/third_level">
@@ -91,5 +92,13 @@
             android:layout_alignParentRight="true" />
 
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/operating_intensity_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fourth_level"
+        android:text="Set Operating Intensity"
+        android:textSize="17sp" />
 
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.example.ronan.final_year_project;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -13,12 +14,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.Toast;
+
 import com.parse.ParseUser;
+
+import java.util.UUID;
 
 public class MainActivity extends Activity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    public static final String TAG = MainActivity.class.getSimpleName();
     private BluetoothLeService mBluetoothLeService;
     private boolean mBound;
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -36,6 +39,9 @@ public class MainActivity extends Activity {
             Log.i(TAG, "Service disconnected");
         }
     };
+    private UUID ronanServiceUUID = UUID.fromString("a6322521-0000-2000-9000-1122334455FF");
+    private boolean runDfsSet = false;
+    private BluetoothGattCharacteristic characteristic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,17 +53,46 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                Log.i("MainActivity", "Run button clicked");
-                if (mBluetoothLeService != null) {
-                    // TODO: 29/02/2016 get actual UUID to set deviceState to RUN_MODE
-                    boolean written = mBluetoothLeService.writeCharacteristic(null, null, new byte[0]);
-                    Log.i(TAG, "Written: "+written);
-                }
+                //if (mBluetoothLeService != null && mBound) {
 
-                else {
-                    Toast toast = Toast.makeText(MainActivity.this, "Please connect to CueStim device first", Toast.LENGTH_LONG);
+                    Intent intent = new Intent(MainActivity.this, RunActivity.class);
+                    startActivity(intent);
+
+                    /*if(!runDfsSet) {
+
+                        List<BluetoothGattService> services = mBluetoothLeService.getSupportedGattServices();
+                        for (BluetoothGattService service : services) {
+                            Log.i(TAG, service.getUuid().toString());
+                            if (service.getUuid().toString().equals("a6322521-0000-2000-9000-1122334455ff")) {
+                                for (BluetoothGattCharacteristic c : service.getCharacteristics()) {
+                                    Log.i(TAG, c.getUuid().toString());
+                                    if (c.getUuid().toString().equals("60010000-0000-2000-9000-1122334455ff")) {
+                                        Log.i(TAG, "Found it");
+                                        characteristic = c;
+                                    }
+                                }
+                            }
+                        }
+
+                        System.out.println((characteristic.getProperties() & (BluetoothGattCharacteristic.PROPERTY_WRITE | BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE)) != 0);
+                        final int charaProp = characteristic.getProperties();
+                        if ((charaProp | BluetoothGattCharacteristic.PROPERTY_WRITE) > 0) {
+                            boolean written = mBluetoothLeService.writeCharacteristic(characteristic, new byte[]{1});
+                            Log.i(TAG, "written: "+written);
+                        }
+
+                    } else {
+                        UUID runCharacteristicUUID = UUID.fromString("60010000-0000-2000-9000-1122334455FF");
+                        runDfsSet = !mBluetoothLeService.writeCharacteristic(ronanServiceUUID, runCharacteristicUUID, new byte[]{0});
+                        Log.i(TAG, "runDFS reset: " + runDfsSet);
+                        run_button.setText(R.string.stop);
+                    }*/
+                //}
+
+                /*else {
+                    Toast toast = Toast.makeText(MainActivity.this, R.string.not_paired, Toast.LENGTH_LONG);
                     toast.show();
-                }
+                }*/
             }
         });
 
@@ -71,14 +106,14 @@ public class MainActivity extends Activity {
             }
         });
 
-        final Button run_mode_button = (Button) findViewById(R.id.runModeButton);
+        /*final Button run_mode_button = (Button) findViewById(R.id.runModeButton);
         run_mode_button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, RunActivity.class);
+                Intent intent = new Intent(MainActivity.this, ViewOutputActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
     }
 
     @Override
@@ -103,7 +138,7 @@ public class MainActivity extends Activity {
             Intent intent = new Intent(this, SignUpActivity.class);
             startActivity(intent);
         } else if (id == R.id.action_logout){
-            ParseUser.getCurrentUser().logOut();
+            ParseUser.logOut();
         } else if (id == R.id.action_settings){
             return true;
         }
@@ -130,6 +165,7 @@ public class MainActivity extends Activity {
         Log.i(TAG, "Paused");
         if (mBluetoothLeService != null) {
             unbindService(mServiceConnection);
+            mBound = false;
         }
         super.onPause();
     }

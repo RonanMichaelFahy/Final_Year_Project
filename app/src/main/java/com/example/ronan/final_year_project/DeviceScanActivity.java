@@ -7,7 +7,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.BroadcastReceiver;
@@ -16,7 +15,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -33,29 +31,24 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DeviceScanActivity extends ListActivity {
 
-    private BluetoothDevice mBluetoothDevice;
     private BluetoothLeService mBluetoothLeService;
     private boolean mBound;
     private static final String TAG = "DeviceScanActivity";
-    private BluetoothManager mBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothLeScanner mBluetoothLeScanner;
     private boolean mScanning;
     private LeDeviceListAdapter mLeDeviceListAdapter;
     private int listItemPosition;
-    private List<ScanFilter> filters = new ArrayList();
+    private ArrayList<android.bluetooth.le.ScanFilter> filters = new ArrayList<>();
     private static final long SCAN_PERIOD = 50000L;
     private static final int REQUEST_ENABLE_BT = 1;
-    private Bundle extras;
     private final ScanCallback mScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, final ScanResult result) {
@@ -123,16 +116,11 @@ public class DeviceScanActivity extends ListActivity {
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
             Log.i(TAG, "action: "+action);
-            if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)){
+            if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action) && mBluetoothLeService != null){
                 Log.i(TAG, "Available services: "+mBluetoothLeService.getSupportedGattServices());
             }
         }
     };
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,17 +128,15 @@ public class DeviceScanActivity extends ListActivity {
         setContentView(R.layout.activity_device_scan);
 
         final ActionBar actionBar = getActionBar();
+        assert actionBar != null;
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        extras = getIntent().getExtras();
 
         mLeDeviceListAdapter = new LeDeviceListAdapter();
         setListAdapter(mLeDeviceListAdapter);
 
-        mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        BluetoothManager mBluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = mBluetoothManager.getAdapter();
-        mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
 
         // Ensures Bluetooth is available on the device and it is enabled. If not,
         // displays a dialog requesting user permission to enable Bluetooth.
@@ -161,15 +147,13 @@ public class DeviceScanActivity extends ListActivity {
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
                     scanDevice(!mScanning);
                 }
             });
             thread.start();
             //scanDevice(!mScanning);
         }
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -182,6 +166,7 @@ public class DeviceScanActivity extends ListActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
         if (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()) {
+            mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
             scanDevice(!mScanning);
         }
     }
@@ -200,19 +185,22 @@ public class DeviceScanActivity extends ListActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == android.R.id.home) {
-            if (extras.get("Calling_Activity").equals("MainActivity")) {
-                Intent intent = new Intent(this, MainActivity.class);
+        switch (id){
+            case R.id.action_login:
+                Intent i = new Intent(this, LoginActivity.class);
+                i.putExtra("Calling_Activity", TAG);
+                startActivity(i);
+                break;
+            case R.id.action_sign_up:
+                Intent intent = new Intent(this, SignUpActivity.class);
                 startActivity(intent);
-            } else if (extras.get("Calling_Activity").equals("PrescriptionSetupActivity")) {
-                Intent intent = new Intent(this, PrescriptionSetupActivity.class);
-                startActivity(intent);
-            }
+                break;
+            case R.id.action_logout:
+                ParseUser.logOut();
+                break;
+            case R.id.action_settings:
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -221,7 +209,7 @@ public class DeviceScanActivity extends ListActivity {
 
         //Stop scanning
         scanDevice(false);
-        mBluetoothDevice = mLeDeviceListAdapter.getDevice(position);
+        BluetoothDevice mBluetoothDevice = mLeDeviceListAdapter.getDevice(position);
         if (mBluetoothDevice == null) return;
 
         listItemPosition = position;
@@ -249,6 +237,21 @@ public class DeviceScanActivity extends ListActivity {
         unregisterReceiver(mGattUpdateReceiver);
 
         super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = getIntent();
+        String callingActivity = intent.getStringExtra("Calling_Activity");
+        Log.i(TAG, intent.getStringExtra("Calling_Activity"));
+        if (callingActivity.equals(MainActivity.TAG)) {
+            Intent intent1 = new Intent(this, MainActivity.class);
+            startActivity(intent1);
+        } else if (callingActivity.equals(PrescriptionSetupActivity.TAG)) {
+            Intent intent1 = new Intent(this, PrescriptionSetupActivity.class);
+            startActivity(intent1);
+        }
     }
 
     private void scanDevice(final boolean enable) {
@@ -284,46 +287,6 @@ public class DeviceScanActivity extends ListActivity {
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "DeviceScan Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.example.ronan.final_year_project/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "DeviceScan Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.example.ronan.final_year_project/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
-    }
-
     private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
@@ -336,11 +299,11 @@ public class DeviceScanActivity extends ListActivity {
     public class LeDeviceListAdapter extends BaseAdapter {
 
         private ArrayList<BluetoothDevice> mLeDevices;
-        private LayoutInflater mInflator;
+        private LayoutInflater mInflater;
 
         public LeDeviceListAdapter() {
-            mLeDevices = new ArrayList<BluetoothDevice>();
-            mInflator = getLayoutInflater();
+            mLeDevices = new ArrayList<>();
+            mInflater = getLayoutInflater();
         }
 
         @Override
@@ -368,16 +331,12 @@ public class DeviceScanActivity extends ListActivity {
             return mLeDevices.get(position);
         }
 
-        public void clear() {
-            mLeDevices.clear();
-        }
-
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             ViewHolder viewHolder;
             // General ListView optimization code.
             if (view == null) {
-                view = mInflator.inflate(R.layout.listitem_device, null);
+                view = mInflater.inflate(R.layout.listitem_device, null);
                 viewHolder = new ViewHolder();
                 viewHolder.deviceAddress = (TextView) view.findViewById(R.id.device_address);
                 viewHolder.deviceName = (TextView) view.findViewById(R.id.device_name);
@@ -411,16 +370,6 @@ public class DeviceScanActivity extends ListActivity {
                     "deviceAddress=" + deviceAddress +
                     ", deviceName=" + deviceName +
                     '}';
-        }
-    }
-
-    class IncomingHandler extends Handler {
-
-        @Override
-        public void handleMessage(Message msg) {
-            Toast toast = Toast.makeText(DeviceScanActivity.this, msg.toString(), Toast.LENGTH_SHORT);
-            toast.show();
-            super.handleMessage(msg);
         }
     }
 }

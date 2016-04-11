@@ -9,7 +9,7 @@
         android:id="@+id/welcome_message"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Welcome to the CueStim App"
+        android:text="Welcome to the Drop Foot Stimulator App"
         android:textStyle="bold"
         android:textSize="35sp"
         android:gravity="center"
@@ -32,20 +32,20 @@
         android:layout_below="@+id/run_button"
         android:layout_margin="5sp" />
 
-    <Button
+    <!-- <Button
         android:id="@+id/runModeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/pair_devices_button_main"
         android:text="View Output"
-        android:layout_margin="5sp" />
+        android:layout_margin="5sp" /> -->
 
     <TextView
         android:id="@+id/loginSignupText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="or login / sign up to configure FES parameters"
-        android:layout_below="@+id/runModeButton"
+        android:layout_below="@+id/pair_devices_button_main"
         android:layout_centerHorizontal="true"
         android:layout_margin="5sp" />
 

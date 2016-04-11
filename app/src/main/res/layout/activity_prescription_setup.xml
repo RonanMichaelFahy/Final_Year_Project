@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
         android:layout_below="@+id/intensity_levels_button"
-        android:text="Cyclic Mode"
+        android:text="Acclimatisation Mode"
         android:id="@+id/cyclic_mode_button" />
 
     <Button

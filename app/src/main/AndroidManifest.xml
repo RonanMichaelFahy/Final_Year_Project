@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature
         android:name="android.hardware.bluetooth_le"
@@ -44,45 +45,45 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:parentActivityName=".MainActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible"></activity>
+            android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity
             android:name=".PrescriptionSetupActivity"
             android:label="Prescription Setup"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".IntensitySetupActivity"
             android:label="Intensity Setup"
-            android:parentActivityName=".PrescriptionSetupActivity"></activity>
+            android:parentActivityName=".PrescriptionSetupActivity" />
         <activity
             android:name=".CyclicModeActivity"
             android:label="Cyclic Mode"
-            android:parentActivityName=".PrescriptionSetupActivity"></activity>
+            android:parentActivityName=".PrescriptionSetupActivity" />
         <activity
             android:name=".TestRunActivity"
             android:label="Test Run"
-            android:parentActivityName=".PrescriptionSetupActivity"></activity>
+            android:parentActivityName=".PrescriptionSetupActivity" />
         <activity
             android:name=".SignUpActivity"
             android:label="Sign Up"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".PatientPrescriptionSetupActivity"
-            android:label="@string/title_activity_patient_prescription_setup"></activity>
+            android:label="@string/title_activity_patient_prescription_setup" />
         <activity
             android:name=".PatientTestRunActivity"
-            android:label="@string/title_activity_patient_test_run"></activity>
+            android:label="@string/title_activity_patient_test_run" />
         <activity
             android:name=".DeviceScanActivity"
-            android:label="Bluetooth Setup"></activity>
+            android:label="Bluetooth Setup" />
 
         <service
             android:name=".BluetoothLeService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".DeviceControlActivity"
-            android:label="@string/title_activity_device_control"></activity>
+            android:label="@string/title_activity_device_control" />
         <!--
              ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -93,7 +94,10 @@
 
         <activity
             android:name=".RunActivity"
-            android:label="@string/title_activity_run"></activity>
+            android:label="@string/title_activity_run" />
+        <activity
+            android:name=".ViewOutputActivity"
+            android:label="@string/title_activity_view_output"></activity>
     </application>
 
 </manifest>
