@@ -55,7 +55,8 @@ public class RunActivity extends Activity implements SensorEventListener {
             gravity[0] = alpha * gravity[0] + (1d - alpha) * raw[0];
             gravity[1] = alpha * gravity[1] + (1d - alpha) * raw[1];
             gravity[2] = alpha * gravity[2] + (1d - alpha) * raw[2];
-            //Log.i(TAG, "gravity[2]: "+gravity[2]);
+
+            Log.i(TAG, gravity[0] + " " + gravity[1] + " " + gravity[2]);
 
             try {
                 fileWriter.append((char) gravity[0]).append(", ");
@@ -221,6 +222,8 @@ public class RunActivity extends Activity implements SensorEventListener {
     protected void onPause() {
         try {
             fileWriter.close();
+            fileWriter1.close();
+            fileWriter2.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
